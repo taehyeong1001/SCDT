@@ -1,0 +1,1135 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[a4paper,top=20mm,bottom=21mm,left=20mm,right=20mm,headheight=20pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+\usepackage{amsmath,bm}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{float}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{pdflscape}
+\usepackage{needspace}
+
+\definecolor{navy}{HTML}{17324D}
+\definecolor{bluegray}{HTML}{EAF0F5}
+\definecolor{rulegray}{HTML}{C9D3DD}
+\definecolor{linkblue}{HTML}{245A8D}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue,
+  hypertexnames=false,
+  pdfauthor={},
+  pdftitle={Supplementary Material for How Much Fluctuation Is Dangerous? Predicting Tipping Points via Statistically Conditioned Digital Twins}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\tabcolsep}{4.5pt}
+\renewcommand{\arraystretch}{1.16}
+\setlist[itemize]{leftmargin=5mm,itemsep=2pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=6mm,itemsep=2pt,topsep=2pt}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{Z}{>{\centering\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\scdt}{\mathrm{SCDT}}
+\newcommand{\gt}{\mathrm{GT}}
+\newcommand{\rc}{\mathrm{RC}}
+
+\titleformat{\section}{\Large\bfseries\color{navy}}{S\thesection}{0.65em}{}
+\titleformat{\subsection}{\large\bfseries\color{navy}}{S\thesubsection}{0.65em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.65em}{}
+\titlespacing*{\section}{0pt}{13pt}{5pt}
+\titlespacing*{\subsection}{0pt}{10pt}{3pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Supplementary Material: Statistically Conditioned Digital Twins}
+\rhead{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulegray}\leaders\hrule height \headrulewidth\hfill}}
+
+\captionsetup{font=small,labelfont=bf,labelsep=period,hypcap=false}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \vspace*{0.26\textheight}
+  {\color{navy}\bfseries\fontsize{24}{31}\selectfont
+  Supplementary Material for\par}
+  \vspace{9mm}
+  {\bfseries\fontsize{20}{27}\selectfont
+  ``How Much Fluctuation Is Dangerous?\par
+  Predicting Tipping Points via Statistically Conditioned Digital Twins''\par}
+  \vfill
+  {\large Detailed model equations, statistical coordinates, training protocols,\par
+  reservoir settings, outcome criteria, and numerical results\par}
+  \vspace*{0.12\textheight}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{Scope and notation}
+
+This Supplementary Material records the numerical protocol used for the final
+food-chain, voltage-collapse, and Kuramoto experiments. It complements the main
+text by specifying the target equations, conditioning statistics, data windows,
+reservoir implementation, test coordinates, outcome rules, and numerical
+thresholds. The physical bifurcation parameter is used to generate and validate
+ground-truth trajectories, but it is not supplied to the SCDT during training or
+autonomous prediction.
+
+For a sampled trajectory, $n$ denotes the discrete sample index and $\Delta t$
+the sampling interval. Three different initialization intervals must be kept
+distinct:
+
+\begin{itemize}
+  \item \textbf{Target transient:} the target ODE is integrated before the
+  retained record begins. These samples are discarded and are never supplied to
+  the reservoir.
+  \item \textbf{Training washout:} retained target samples are supplied to the
+  reservoir, but the early reservoir states are excluded from the readout
+  regression so that dependence on the zero reservoir state is reduced.
+  \item \textbf{Prediction warm-up (teacher forcing):} a target segment is
+  supplied immediately before autonomous prediction. These samples initialize
+  the reservoir state; the subsequent SCDT output is fed back as its next input.
+\end{itemize}
+
+The labels \emph{inter}, \emph{pre}, and \emph{post} denote, respectively, a
+test point inside the training range, a test point beyond the training range but
+before the physical transition, and a point beyond the transition.
+
+\section{Statistically conditioned reservoir}
+
+\subsection{Reservoir update}
+
+Let $\bm{u}_n\in\mathbb{R}^{D}$ be the dynamical input, $\bm{r}_n\in
+\mathbb{R}^{N_r}$ the reservoir state, and $\bm{s}\in\mathbb{R}^{2}$ a pair of
+statistics that remains constant over one trajectory segment. After the
+system-specific normalization $\mathcal{T}_s$, the reservoir evolves as
+\begin{equation}
+  \bm{r}_{n+1}
+  = (1-\alpha)\bm{r}_{n}
+  + \alpha\tanh\!\left(
+      A\bm{r}_{n}+W_{\mathrm{in}}\bm{u}_{n}
+      +W_{\mathrm{stat}}\mathcal{T}_s(\bm{s})
+    \right),
+  \label{eq:scdt-update}
+\end{equation}
+where $A$ and the input matrices are fixed after random initialization,
+$\alpha$ is the leakage rate, and only the output matrix is trained. The
+statistics channel therefore acts as a trajectory-level bias that indexes a
+family of reservoir dynamics.
+
+For one-step training, the output weights solve
+\begin{equation}
+  W_{\mathrm{out}}
+  = \arg\min_W
+  \sum_{m=1}^{M}\sum_{n\in\mathcal{I}_m}
+  \left\|W\bm{z}^{(m)}_{n+1}-\bm{u}^{(m)}_{n+1}\right\|_2^2
+  +\beta\|W\|_F^2,
+  \label{eq:ridge}
+\end{equation}
+where $M=5$ is the number of training conditions, $\mathcal{I}_m$ excludes the
+washout interval, $\beta$ is the ridge coefficient, and $\bm{z}$ is the
+system-specific readout feature in Table~\ref{tab:readout}. During autonomous
+prediction, $\widehat{\bm{u}}_{n+1}=W_{\mathrm{out}}\bm{z}_{n+1}$ is fed back
+as $\bm{u}_{n+1}$.
+
+\begin{table}[ht]
+\centering
+\caption{System-specific dynamical variables, statistic normalization, and
+readout feature. These details refine the generic readout equation in the main
+text.}
+\label{tab:readout}
+\small
+\begin{tabularx}{\textwidth}{L{27mm} L{34mm} Y Y}
+\toprule
+System & Dynamic input/output & Statistic transform $\mathcal{T}_s$ & Readout feature $\bm{z}$ \\
+\midrule
+Food chain & $[R,C,P]^{\mathsf T}$
+& Training-set z-score, followed by elementwise gain $(0.1,0.1)$ and bias
+$(-1.63179994,0.05175686)$
+& $\bm{z}=\phi(\bm r)$, where zero-based odd entries are squared:
+$\phi_j(r_j)=r_j^2$ for $j=1,3,5,\ldots$, and $r_j$ otherwise. \\
+Voltage collapse & $[\delta_m,\omega,\delta,V]^{\mathsf T}$
+& Coordinatewise min-max scaling with frozen bounds from the original
+10,000-sample training records; the scaled
+pair is multiplied through $W_{\mathrm{stat}}$, whose standard deviation is
+set by the statistic-scaling hyperparameter
+& $\bm{z}=\bm r$. \\
+Kuramoto network & Scalar order parameter $r$
+& Coordinatewise z-score over the five training conditions
+& $\bm{z}=[\bm r^{\mathsf T},\widetilde r,1]^{\mathsf T}$, where
+$\widetilde r$ is the standardized current order parameter. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Conditioning path and test queries}
+
+Each training trajectory provides a measured pair
+$\bm{s}^{(m)}=(s_1^{(m)},s_2^{(m)})$. A least-squares line
+\begin{equation}
+  s_2=a s_1+b
+  \label{eq:conditioning-path}
+\end{equation}
+describes the training trend. The reported test and rate-sweep queries for all
+three systems use their corresponding measured-training fits. The physical
+parameter is never an input to the reservoir.
+
+Training coordinates in Tables~\ref{tab:food-coordinates}--\ref{tab:kura-coordinates}
+are direct measurements from retained target trajectories. The reported test
+coordinates are the actual pairs supplied to the final SCDT. For Food and
+Voltage, the first test coordinate is obtained from interpolation, direct
+precritical measurement, or parameter-to-statistic extrapolation as specified
+below. The second coordinate follows the system-specific fit described below.
+The Kuramoto test pairs are treated in the same way after selecting asynchronous
+inter/pre trajectories.
+
+\section{Conditioning statistics}
+
+\subsection{Standard deviation}
+
+For a scalar record $x_1,\ldots,x_T$, the population standard deviation used in
+the code is
+\begin{equation}
+  \sigma_x=\sqrt{\frac{1}{T}\sum_{n=1}^{T}(x_n-\bar{x})^2},
+  \qquad
+  \bar{x}=\frac{1}{T}\sum_{n=1}^{T}x_n.
+  \label{eq:std}
+\end{equation}
+The food-chain coordinate is $\sigma_P$ and the voltage coordinate is
+$\sigma_V$.
+
+\subsection{Lag-1 autocorrelation}
+
+The voltage experiment uses
+\begin{equation}
+  \rho_1(V)=\frac{c_1}{c_0},\qquad
+  c_0=\frac{1}{T}\sum_{n=1}^{T}(V_n-\bar V)^2,
+  \qquad
+  c_1=\frac{1}{T-1}\sum_{n=1}^{T-1}(V_n-\bar V)(V_{n+1}-\bar V).
+  \label{eq:ac1}
+\end{equation}
+
+\subsection{Permutation entropy}
+
+The food-chain experiment uses normalized permutation entropy of $P(t)$ with
+embedding order $d=3$ and delay $\tau=1$. If $p(\pi)$ is the empirical
+probability of ordinal pattern $\pi$ among the $d!$ possible patterns, then
+\begin{equation}
+  H_{\mathrm{perm}}
+  =-\frac{1}{\log(d!)}\sum_{\pi}p(\pi)\log p(\pi),
+  \qquad d=3,\quad \tau=1.
+  \label{eq:permentropy}
+\end{equation}
+The implementation uses the normalized estimator in the \texttt{antropy}
+package~\cite{Bandt2002}.
+
+\subsection{Kuramoto order parameter and topology-aware correlations}
+
+Macroscopic synchronization is measured by
+\begin{equation}
+  r(t)=\left|\frac{1}{N}\sum_{j=1}^{N}e^{\mathrm{i}\theta_j(t)}\right|.
+  \label{eq:order-parameter}
+\end{equation}
+The SCDT dynamically predicts only the scalar $r(t)$. Node phases are used to
+construct the two static conditioning coordinates. Set
+$x_i(t)=\cos\theta_i(t)$ and let $\rho_{ij}$ be the Pearson correlation between
+$x_i$ and $x_j$ over the retained measurement segment. The code uses
+$|\rho_{ij}|$. Nodes at or above the 90th percentile of degree form the hub set
+$\mathcal H$, and the remaining nodes form $\mathcal L$. The statistics are
+\begin{align}
+  S_{\mathrm{int}}
+  &=\frac{1}{|\mathcal H|(|\mathcal H|-1)}
+    \sum_{\substack{i,j\in\mathcal H\\i\ne j}}|\rho_{ij}|,
+  \label{eq:sint}\\
+  S_{\mathrm{out}}
+  &=\frac{1}{|\mathcal H||\mathcal L|}
+    \sum_{i\in\mathcal H}\sum_{j\in\mathcal L}|\rho_{ij}|.
+  \label{eq:sout}
+\end{align}
+These are experiment-specific, topology-aware regime coordinates motivated by
+correlation-based functional connectivity and hub synchronization studies
+\cite{Ziaeemehr2021,Pereira2010,Vlasov2017}; they are not assumed to be
+universal early-warning indicators.
+
+\section{Target dynamical systems}
+
+\subsection{Tri-trophic food chain}
+
+The state is $[R,C,P]^{\mathsf T}$: resource, consumer, and predator. The exact
+equations implemented in the final experiment are
+\begin{align}
+  \dot R&=R\left(1-\frac{R}{K}\right)
+  -\frac{x_c y_c C R}{R+R_0}, \\
+  \dot C&=x_c C\left(\frac{y_cR}{R+R_0}-1\right)
+  -\frac{x_p y_p P C}{C+C_0}, \\
+  \dot P&=x_p P\left(\frac{y_pC}{C+C_0}-1\right).
+  \label{eq:food}
+\end{align}
+The parameters are
+\begin{equation}
+  x_c=0.4,\quad y_c=2.009,\quad x_p=0.08,\quad y_p=2.876,
+  \quad R_0=0.16129,\quad C_0=0.5.
+\end{equation}
+The carrying capacity $K$ is varied only to generate and validate data. The
+model is a standard chaotic tri-trophic food-chain benchmark
+\cite{McCann1994,Kong2021}.
+
+Target trajectories are integrated by RK45. The solver output is evaluated at
+$0.1$-time-unit intervals and every tenth value is retained, giving
+$\Delta t=1$. For each candidate trajectory, 2,000 retained samples are
+discarded as target transient and 6,000 subsequent samples are retained. The
+initial condition is sampled independently as
+\begin{equation}
+  R(0)\sim U(0.6,1.0),\qquad
+  C(0)\sim U(0.15,0.55),\qquad
+  P(0)\sim U(0.6,0.7).
+\end{equation}
+Up to 30 draws are attempted. A retained training record is accepted only when
+$\min P>0.01$ and its final value satisfies $P>0.01$.
+
+\subsection{Voltage-collapse model}
+
+The four-dimensional state is
+$[\delta_m,\omega,\delta,V]^{\mathsf T}$. The implemented Dobson--Chiang model
+is~\cite{Dobson1989,Kong2021}
+\begin{align}
+  \dot{\delta}_m &= \omega,\\
+  M\dot{\omega} &= -d_m\omega+P_m-E_m VY_m\sin(\delta_m-\delta),\\
+  K_{qw}\dot{\delta} &= -K_{qv2}V^2-K_{qv}V+Q-Q_0-Q_1,\\
+  TK_{qw}K_{pv}\dot V
+  &=K_{pw}K_{qv2}V^2+(K_{pw}K_{qv}-K_{qw}K_{pv})V\nonumber\\
+  &\quad+K_{qw}(P-P_0-P_1)-K_{pw}(Q-Q_0-Q_1),
+  \label{eq:voltage}
+\end{align}
+where
+\begin{align}
+  P&=-E'_0 VY'_0\sin\delta+E_mVY_m\sin(\delta_m-\delta),\\
+  Q&= E'_0 VY'_0\cos\delta+E_mVY_m\cos(\delta_m-\delta)
+  -(Y'_0+Y_m)V^2.
+  \label{eq:pq}
+\end{align}
+With $\theta_0=0$, the transformed source parameters are evaluated from
+\begin{align}
+  Y'_0&=Y_0\sqrt{1+(C/Y_0)^2-2(C/Y_0)\cos\theta_0},\\
+  E'_0&=\frac{E_0}{\sqrt{1+(C/Y_0)^2-2(C/Y_0)\cos\theta_0}}.
+\end{align}
+
+\begin{table}[ht]
+\centering
+\caption{Voltage-model parameters used in every simulation.}
+\label{tab:voltage-parameters}
+\small
+\begin{tabular}{@{}llllllll@{}}
+\toprule
+$K_{pw}$ & $K_{pv}$ & $K_{qw}$ & $K_{qv}$ & $K_{qv2}$ & $T$ & $P_m$ & $d_m$ \\
+\midrule
+0.4 & 0.3 & -0.03 & -2.8 & 2.1 & 8.5 & 1.0 & 0.05 \\
+\addlinespace
+$M$ & $E_m$ & $Y_0$ & $Y_m$ & $P_0$ & $Q_0$ & $P_1$ & $(C,E_0)$ \\
+\midrule
+0.01464 & 1.05 & 3.33 & 5.0 & 0.6 & 1.3 & 0.0 & $(3.5,1.0)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ODE is integrated by RK45 at $\Delta t=0.05$, with maximum internal step
+$0.1$, relative tolerance $10^{-4}$, and absolute tolerance $10^{-6}$. Stable
+training trajectories use
+\begin{equation}
+  \delta_m(0)\sim U(0.17,0.25),\quad
+  \omega(0)\sim U(0,0.05),\quad
+  \delta(0)\sim U(0.05,0.10),\quad
+  V(0)\sim U(0.83,0.87).
+\end{equation}
+The first 500 time units (10,000 samples) are discarded. The next 3,000 time
+units (60,000 samples) form the training record; an additional 200-time-unit
+(4,000-sample) buffer is generated but is not included in the readout fit. The
+conditioning statistics are measured over all 60,000 training samples. For the
+displayed post-collapse ground truth, a delayed-collapse initial-condition
+region is used:
+$\delta_m(0)\sim U(0.17,0.42)$, $\omega(0)=0.025$,
+$\delta(0)=0.10$, and $V(0)\sim U(0.70,0.87)$.
+
+\subsection{Degree-frequency correlated Kuramoto network}
+
+The target network obeys
+\begin{equation}
+  \dot\theta_i=\omega_i+K\sum_{j=1}^{N}A_{ij}
+  \sin(\theta_j-\theta_i),\qquad
+  \omega_i=\frac{k_i}{\langle k\rangle},
+  \qquad i=1,\ldots,N.
+  \label{eq:kuramoto}
+\end{equation}
+No additional $1/N$ normalization is applied to the coupling term. A fixed
+Barabasi--Albert graph~\cite{Barabasi1999} is generated with $N=100$,
+attachment parameter $m=3$, and network seed 0. It contains 291 edges, has mean
+degree $5.82$, and has degree range 1--32. The degree-frequency correlation
+produces explosive synchronization in this variant of the Kuramoto
+model~\cite{Kuramoto1984,GomezGardenes2011}.
+
+The ODE is integrated by RK45 with $\Delta t=0.05$ and relative and absolute
+tolerances $10^{-7}$. For every training condition, the target is evolved for
+185 time units. The first 70 time units (1,400 sampling intervals) are discarded
+as target transient, leaving 115 time units (2,301 samples, including both
+endpoints) for statistics and RC training. All five selected training
+trajectories use target seed 26 and remain asynchronous. The final inter,
+pre-synchronization trajectories displayed in Fig.~9 also use target seed 26.
+The post query in Fig.~8 is assessed by a separate 20-window SCDT check, not
+by a displayed seed-26 post trajectory. Selected-point GT checks use independent
+phase seed 26, rather than the forward-continuation initialization of the GT rate curve.
+The 10 highest-degree nodes form
+$\mathcal H$ and the other 90
+nodes form $\mathcal L$.
+
+The target forward continuation spans $K\in[0.15,0.35]$ in steps of $0.01$;
+the final rate figure displays its 12 GT points in $K\in[0.19,0.30]$.
+The SCDT is evaluated at 18 uniformly spaced conditioning settings over the
+same calibration-label interval. Each of 20
+target realizations starts from independent random phases at $K=0.15$.
+At each coupling, the target is integrated for 500 time units, and synchronization is
+evaluated over the final 150 time units. The final phase state is then reused as
+the initial condition at the next value on the increasing-$K$ grid. No
+synchronized-branch initialization is imposed. The coupling value and
+continuation state are not supplied as SCDT inputs.
+
+\section{Training and test coordinates}
+
+\begin{table}[H]
+\centering
+\caption{Food-chain coordinates. The SCDT receives the two statistics, not
+$K$. Training statistics are direct measurements from the selected ODE
+trajectories.}
+\label{tab:food-coordinates}
+\small
+\begin{tabular}{@{}lrrrrl@{}}
+\toprule
+Role & $K$ & $\sigma_P$ & $H_{\mathrm{perm}}$ & Target seed & Coordinate source \\
+\midrule
+Train & 0.9740 & 0.121337 & 0.505563 & 8 & Direct target measurement \\
+Train & 0.9780 & 0.123094 & 0.506485 & 5 & Direct target measurement \\
+Train & 0.9800 & 0.125328 & 0.508786 & 1 & Direct target measurement \\
+Train & 0.9820 & 0.126225 & 0.510812 & 0 & Direct target measurement \\
+Train & 0.9880 & 0.128283 & 0.512399 & 8 & Direct target measurement \\
+\rowcolor{bluegray} Inter & 0.9850 & 0.127254 & 0.511310 & -- & Conditioning-path query \\
+\rowcolor{bluegray} Pre & 0.9970 & 0.133339 & 0.517649 & -- & Conditioning-path query \\
+\rowcolor{bluegray} Post & 1.0001 & 0.134923 & 0.519299 & -- & Conditioning-path query \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Voltage-collapse coordinates. The SCDT receives the two statistics,
+not $Q_1$.}
+\label{tab:voltage-coordinates}
+\small
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+Role & $Q_1$ & $\sigma_V$ & $\rho_1(V)$ & Coordinate source \\
+\midrule
+Train & 2.9896800 & 0.0316339 & 0.9834461 & Direct target measurement \\
+Train & 2.9897050 & 0.0317339 & 0.9835333 & Direct target measurement \\
+Train & 2.9897300 & 0.0319752 & 0.9838649 & Direct target measurement \\
+Train & 2.9897550 & 0.0322487 & 0.9841907 & Direct target measurement \\
+Train & 2.9897800 & 0.0325905 & 0.9846133 & Direct target measurement \\
+\rowcolor{bluegray} Inter & 2.9897475 & 0.0321755 & 0.9841014 & Direct $\sigma_V$; projected $\rho_1$ \\
+\rowcolor{bluegray} Pre & 2.9897840 & 0.0326679 & 0.9847096 & Direct $\sigma_V$; projected $\rho_1$ \\
+\rowcolor{bluegray} Post & 2.9898270 & 0.0330095 & 0.9851316 & Projected near-critical extrapolation query \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For Voltage, the five displayed training pairs are direct measurements from
+the 60,000-sample records and exactly match the normalized statistics stored
+with the trained reservoir. Statistic normalization retains the coordinatewise
+minimum and maximum from the original five 10,000-sample training records.
+These bounds are reused for the final 60,000-sample training records and all
+test and rate queries, without refitting the normalization. Their fitted conditioning relation is
+$\rho_1=1.2351899093\,\sigma_V+0.9443585599$. The inter, pre, and post
+test queries, as well as every SCDT rate-sweep query, use this same relation.
+The rate-sweep inputs are 35 uniformly spaced $\sigma_V$ values, and the
+displayed rate axis is aligned by the Fig.~7(b) raw regression described
+below. The measured-training fit $\sigma_V=9.7123093821\,Q_1-29.0051462885$
+is used only to assign original query labels for selecting the training
+warm-up record and conditioning schedule; $Q_1$ itself is used only for
+target generation and axis alignment. Refitting the readout
+on the 299,495 effective training pairs reproduced the stored readout weights
+exactly; the training inputs and reservoir weights were not changed.
+
+\begin{table}[H]
+\centering
+\caption{Kuramoto coordinates. Column order matches the conditioning vector
+used by the code, $[S_{\mathrm{out}},S_{\mathrm{int}}]$.}
+\label{tab:kura-coordinates}
+\small
+\begin{tabularx}{\textwidth}{@{}lrrrrY@{}}
+\toprule
+Role & $K$ & $S_{\mathrm{out}}$ & $S_{\mathrm{int}}$ & Target seed & Coordinate source \\
+\midrule
+Train & 0.2180 & 0.056196 & 0.183096 & 26 & Direct target measurement \\
+Train & 0.2210 & 0.057167 & 0.203595 & 26 & Direct target measurement \\
+Train & 0.2260 & 0.056519 & 0.208676 & 26 & Direct target measurement \\
+Train & 0.2290 & 0.058910 & 0.216242 & 26 & Direct target measurement \\
+Train & 0.2320 & 0.060497 & 0.227692 & 26 & Direct target measurement \\
+\rowcolor{bluegray} Inter & 0.2300 & 0.059169325 & 0.218284892 & 26 & Training-regression query \\
+\rowcolor{bluegray} Pre & 0.236042416 & 0.060820326 & 0.231408065 & 26 & Training-regression query \\
+\rowcolor{bluegray} Post & 0.2400 & 0.061901678 & 0.240003312 & -- & Training-regression query \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The Kuramoto training-coordinate fits are
+$S_{\mathrm{out}}=0.273235303842\,K-0.003674794901$ and
+$S_{\mathrm{int}}=7.948614050530\,S_{\mathrm{out}}-0.252029235654$.
+Selected test pairs follow these fits and are the actual coordinates supplied
+to the SCDT. During the pre search, $S_{\mathrm{int}}$ is scanned and
+$S_{\mathrm{out}}$ is obtained by inverting the second fit; the first fit
+then identifies the corresponding target-query $K$. These supplied test
+coordinates are not newly measured raw statistics of the test trajectories.
+The selected pre satisfies
+$0.227692011<S_{\mathrm{int}}=0.231408065<0.231968081$, placing it
+between the maximum training $S_{\mathrm{int}}$ and the displayed coarse-grid
+SCDT crossing. Its original target-query $K=0.236042416$ exceeds the largest
+training $K=0.232$. Its $S_{\mathrm{out}}=0.060820326$ also exceeds the
+maximum raw training $S_{\mathrm{out}}=0.060497060$.
+All 20 training-window SCDT reproductions remain asynchronous at this pre;
+the independently integrated seed-26 GT trajectory is also asynchronous.
+This is a single-realization GT check, not a 20-seed GT ensemble result.
+
+For Food and Voltage inter and pre queries, the requested conditioning
+coordinate is held fixed during warm-up and autonomous prediction. For
+Kuramoto, warm-up pairs the selected training trajectory with its own training
+conditioning coordinate; the requested query coordinate is applied from the
+first autonomous step and held fixed thereafter. Food uses the last-training
+conditioning for the first 500 autonomous steps and then ramps to the post
+coordinate over 50 steps. Voltage and Kuramoto use a constant requested
+conditioning coordinate throughout the autonomous rollout. Dynamic warm-up
+samples are taken only from a selected training trajectory for all three
+systems. Warm-up samples initialize the reservoir state but are excluded from
+every autonomous evaluation window reported below.
+\textcolor{red}{The Food rate sweep uses a single input schedule at every
+conditioning setting: the requested coordinate is held constant during the
+500-sample training-trajectory warm-up and all 1,000 autonomous samples.
+There is no critical-parameter-dependent switch, autonomous hold, or ramp
+in the rate sweep. The separately displayed post trajectory retains the
+hold/ramp protocol described above.}
+
+\begin{landscape}
+\section{Sequence lengths and rollout protocol}
+
+\centering
+\captionof{table}{Complete sequence accounting. A ``step'' denotes one retained
+sample interval after ODE resampling.}
+\label{tab:sequence}
+\small
+\begin{tabularx}{\linewidth}{L{38mm} Y Y Y}
+\toprule
+Item & Food chain & Voltage collapse & Kuramoto network \\
+\midrule
+Sampling interval
+& $\Delta t=1$
+& $\Delta t=0.05$
+& $\Delta t=0.05$ \\
+
+Target transient discarded
+& 2,000 steps = 2,000 time units
+& 500 time units = 10,000 steps
+& 70 time units = 1,400 intervals \\
+
+Retained target record per training condition
+& 6,000 steps
+& 3,000 time units = 60,000 training samples, plus a 4,000-sample buffer
+& 115 time units = 2,301 samples \\
+
+Window used to calculate conditioning statistics
+& First 2,000 samples of retained $P(t)$
+& All 60,000 samples of the training-window $V(t)$
+& All 2,301 retained phase samples \\
+
+Training input/target pairs before washout
+& 1,999 per condition
+& 59,999 per condition
+& 2,300 per condition \\
+
+Training washout
+& Updates $n\le100$ excluded
+& First 100 updates excluded = 5 time units
+& First 80 updates excluded = 4 time units \\
+
+Readout pairs retained
+& 1,898 per condition; 9,490 total
+& 59,899 per condition; 299,495 total
+& 2,220 per condition; 11,100 total \\
+
+Prediction target seed buffer
+& Selected inter/pre: final 500 samples from a training trajectory; rate: sampled 500-sample training windows
+& 100 samples from the nearest selected training trajectory; endpoint 9,500 for inter/pre and 26,375 for the displayed post case; rate: 50 training-window endpoints per $Q_1$
+& Displayed inter/pre: member 0 among 20 evenly spaced 60-sample windows from the nearest training trajectory; rate curve: all 20 windows \\
+
+Samples actually fed during prediction warm-up
+& 500 steps
+& 100 steps = 5 time units
+& 60 steps = 3 time units \\
+
+Autonomous prediction horizon
+& Selected trajectories: 2,000 steps; rate: 1,000 steps ($\Delta t=1$)
+& Inter/pre and statistical reconstruction: 10,000 steps = 500 time units; post and rate: 2,000 steps = 100 time units
+& 10,000 steps = 500 time units for both selected-point checks and the rate curve; first 2,000 steps shown in Fig.~9 \\
+
+Post-query conditioning schedule
+& Last-training conditioning held for 500 autonomous steps, followed by a 50-step linear ramp to the post coordinate
+& Requested post coordinate fixed throughout the autonomous rollout
+& Post coordinate fixed throughout the autonomous rollout \\
+
+Displayed trajectory length
+& 2,000 steps
+& 1,000 steps for inter/pre; first 200 of 2,000 generated steps for the post comparison
+& 2,000 steps \\
+\bottomrule
+\end{tabularx}
+\end{landscape}
+
+\begin{landscape}
+\section{Reservoir hyperparameters and constraints}
+
+\centering
+\captionof{table}{Final reservoir settings. ``Density'' follows the exact mask semantics
+of each implementation; this avoids interpreting the configuration field
+\texttt{sparsity} in the opposite direction.}
+\label{tab:hyperparameters}
+\small
+\begin{tabularx}{\linewidth}{L{41mm} Z Z Z}
+\toprule
+Parameter & Food chain & Voltage collapse & Kuramoto network \\
+\midrule
+Reservoir nodes $N_r$ & 1,000 & 900 & 2,000 \\
+Recurrent-matrix construction
+& Sparse random matrix with requested pre-symmetrization density $113/1000=0.113$; matrix is symmetrized
+& Gaussian dense draw masked by $U>0.91$; approximately 9\% retained
+& Gaussian draw with entries zeroed for $U>0.972323118$; approximately 97.23\% retained \\
+Spectral radius & 1.5 & 0.5346534903 & 1.153870539 \\
+Leakage $\alpha$ & 0.01 & 0.1426937444 & 0.09044233509 \\
+Ridge coefficient $\beta$ & 0.00183011 & 0.08711372385 & 10.0 \\
+Dynamic-input scaling & 5.0 & 2.566087561 & 0.04672287231 \\
+Statistic-input scaling & $(0.1,0.1)$ after z-scoring & 0.125 in $W_{\mathrm{stat}}$ & 0.4542375643 in $W_{\mathrm{stat}}$ \\
+Statistic offset & $(-1.631799943,0.0517568555)$ & None after min-max scaling & None after z-scoring \\
+Reservoir seed & 11 & 42 & 23 \\
+Output constraint
+& Negative state components clipped to zero; rollout terminated at $P<0.01$ by filling the remaining output with zero
+& Componentwise clipping to $[-0.10,-1.50,-0.30,0.01]$ and $[0.70,1.20,0.40,1.10]$
+& Standardized output clipped to $\pm5.716762690$, then inverse-transformed and clipped to $r\in[0,1]$ \\
+Prediction mode & Full-state closed loop & Full-state closed loop & Scalar $r$-only closed loop \\
+\bottomrule
+\end{tabularx}
+\end{landscape}
+
+The final Kuramoto checkpoint was obtained by exploratory searches over
+five-point training sets and $N_r=2000$ reservoir settings, followed by
+full-horizon, 20-window validation and ridge-coefficient refinement. Selection
+used the frozen GT transition to favor an earlier SCDT crossing together with
+asynchronous training/pre queries and a synchronized high-coordinate response.
+These are exploratory model-selection results, not independent held-out
+validation of the critical-point estimate. A separate $K=0.240$ post query
+has subsequently been checked with all 20 training warm-up windows.
+The standardized-output clipping ceiling maps to $r=0.550513278$ with the
+stored signal normalizer; synchronization outcomes use this constrained output
+and do not imply reproduction of the GT post-branch amplitude near $r=1$.
+The inter and pre trajectories in Fig.~9 use the saved final checkpoint; the
+rate curve in Fig.~10 uses the same checkpoint and training coordinates.
+For the displayed inter and pre trajectories, the nearest training records
+are $K=0.229$ and $K=0.232$, respectively. The first of the 20 training
+windows is asynchronous in each case and is the window plotted in Fig.~9.
+
+\section{Outcome criteria and rate curves}
+
+\subsection{Selected-trajectory classification}
+
+The qualitative selected-point checks use the following definitions:
+\begin{itemize}
+  \item \textbf{Food-chain survival:} a 2,000-step trajectory survives when
+  the mean predator population over the final 100 steps is greater than 0.05.
+  The first sample with $P<0.05$ is recorded as the event step.
+  \item \textbf{Voltage survival:} a 2,000-step trajectory survives when every
+  autonomous voltage sample is finite and $V>0.30$ throughout the rollout. The
+  first sample with $V\le0.30$ is recorded as the event time.
+  \item \textbf{Kuramoto synchronization:} the evaluation tail is the final
+  30\% of a 10,000-step prediction, namely 3,000 samples or 150 time units. A
+  trajectory is synchronized when at least 80\% of those samples satisfy
+  $r\ge0.5$. Equivalently, at least 2,400 of the final 3,000 samples, corresponding
+  to at least 120 time units in total, must pass the threshold. The passing
+  samples need not be contiguous.
+\end{itemize}
+
+For the Kuramoto inter/pre checks, the autonomous prediction lasts 500 time
+units after a 3-time-unit training-trajectory warm-up. Figure~9 displays only
+its first 100 time units. Classification uses the final 3,000 autonomous
+samples at $t=350.05,350.10,\ldots,500.00$, not the displayed first 100 or
+the discarded 70-time-unit target transient. For the independent selected-point
+GT, the matching evaluation samples are at absolute target times
+$420.05,420.10,\ldots,570.00$ after the 70-time-unit transient.
+
+For the final Kuramoto rate curve, the same threshold and occupancy fractions
+are applied to a 10,000-sample autonomous prediction (500 time units). Its
+evaluation tail is the final 3,000 samples (150 time units), and synchronization
+requires at least 2,400 of those samples (120 time units in total) to satisfy
+$r\geq0.5$. Warm-up samples are excluded from both evaluation windows.
+
+\subsection{Rate-sweep grids and ensembles}
+
+\begin{table}[ht]
+\centering
+\caption{Final rate-curve protocol and provenance.}
+\label{tab:rate}
+\small
+\begin{tabularx}{\textwidth}{L{29mm} Y Y Y}
+\toprule
+Item & Food chain & Voltage collapse & Kuramoto network \\
+\midrule
+GT/calibration-parameter grid
+& GT and SCDT calibration: $K\in[0.975,1.010]$, 22 equally spaced points each
+& $Q_1\in[2.989620,2.989960]$, 35 points at $10^{-5}$ spacing
+& GT: 12 points, $\Delta K=0.01$; SCDT calibration labels: 18 points, $\Delta K=0.11/17\approx0.006470588$, both in $[0.19,0.30]$ \\
+Representative lower-axis statistic
+& $\sigma_P$
+& $\sigma_V$
+& $S_{\mathrm{int}}$ \\
+GT ensemble
+& 20 fresh ODE integrations per final-grid condition, using fixed baseline initial-condition subsets
+& 50 fresh ODE integrations per final-grid condition, using the original random-initial-condition family
+& 20 forward-continuation ODE realizations per point \\
+SCDT ensemble
+& 20 closed-loop rollouts per point
+& 50 closed-loop rollouts per point
+& 20 closed-loop rollouts per point, initialized by distinct training-trajectory windows \\
+GT/SCDT evaluation horizon
+& 1,000 samples, $\Delta t=1$; 1,000 time units after initialization
+& 2,000 samples, $\Delta t=0.05$; 100 time units
+& 10,000 samples, $\Delta t=0.05$; 500 time units \\
+Rate rule
+& Final-500-step mean $P>0.05$
+& All 2,000 predicted voltage samples finite and $\min V>0.30$
+& Final 3,000 of 10,000 autonomous samples; at least 80\% with $r\geq0.5$ \\
+Reported GT--SCDT MAE
+& \textcolor{red}{21.1364} percentage points
+& 17.7143 percentage points
+& 0.03560606 in rate fraction, on the 12 GT coordinates \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+For the Kuramoto rate MAE, the 18-point SCDT curve is linearly interpolated
+at the 12 directly evaluated GT coordinates on the common statistic axis.
+The GT rates are not interpolated or recomputed for this comparison.
+These are distinct conditioning grids, not different ensemble sizes.
+For Food and Voltage, GT and SCDT are evaluated at matching abscissae on
+the common statistical axis. The 22 Food supplied values are uniformly
+spaced over $[0.119237869,0.149162935]$ with spacing $0.001425003$;
+the 35 Voltage values cover $[0.030830874,0.034524236]$ with spacing
+$0.000108628$. The same panel-(b) regression maps the corresponding GT
+parameter grid onto these coordinates. MAEs compare the paired measured
+rates directly, without interpolation. All 440 Food and 1,750 Voltage
+SCDT member rollouts were regenerated with the frozen reservoirs and
+training-only warm-up protocols; every evaluated point is retained.
+\textcolor{red}{All 440 Food rollouts use the same constant-requested-coordinate
+rule. The frozen reservoir, requested coordinates, training source records,
+20 warm-up windows per setting, and survival criterion are unchanged.}
+
+The final Food GT rate retains the 22 directly integrated conditions in
+$K\in[0.975,1.010]$ from the previous 31-condition GT calculation;
+it is not an interpolation of stored survival fractions. Initial
+conditions are the fixed 20-member subset selected with seed 20260922 from the
+original baseline at the nearest original $K$. No initial conditions are
+filtered by their outcome in the new integrations. After a 500-time-unit
+target transient, 1,000 samples at $\Delta t=1$ are evaluated. The survival
+mean uses the final 500 samples. At each matched statistical coordinate,
+the 20 SCDT runs use the same evaluation length, sampling interval, tail,
+and threshold, excluding their
+500-sample training-trajectory warm-up. All rate-query entropy values use the
+same training $\sigma_P$--$H_{\mathrm{perm}}$ fit as the selected test queries.
+This does not equate GT random initial conditions with SCDT warm-up states.
+
+The GT evaluation samples are $t=500,501,\ldots,1499$, with the mean
+calculated at $t=1000,\ldots,1499$. For SCDT, autonomous sample indices
+$0,\ldots,999$ are evaluated and indices $500,\ldots,999$ enter the mean;
+no teacher-forced samples enter either SCDT evaluation window.
+The GT rates use the first 1,000 samples of the saved ODE records.
+All 22 SCDT conditions were freshly evaluated over 1,000 autonomous samples;
+the saved member trajectories reproduce every reported survival decision.
+Selected inter/pre/post trajectory checks retain their separate
+2,000-sample horizon and final-100-sample criterion; the displayed post
+rollout also retains its distinct conditioning hold/ramp protocol.
+
+For Voltage, the 50 directly integrated target trajectories at each of the
+35 displayed $Q_1$ values are retained. Initial conditions retain the original baseline's
+distribution and seed convention, using the nearest original baseline row
+to identify the seed family, with no outcome-based resampling. Both GT and
+SCDT use a 100-time-unit evaluation horizon at $\Delta t=0.05$. GT samples
+are evaluated from $t=0$ through $99.95$, so early threshold crossings count;
+no initial 25-time-unit GT interval is discarded. SCDT evaluation starts
+after its 100-sample training-trajectory warm-up. A sampled $V\le0.30$
+establishes non-survival even if integration later truncates. All 906
+truncated GT runs contain such a sampled violation, leaving no unresolved
+decisions. The frozen consistent-final SCDT is evaluated afresh at all
+35 uniformly spaced input statistics, with 50 member rollouts per point;
+their saved trajectories verify every reported member decision.
+
+Kuramoto target
+and SCDT rates use different but explicit
+initialization protocols. The target uses 20 independent
+forward continuations. At each supplied coordinate, the SCDT is reset and warmed up with 20
+evenly spaced 60-sample windows from the nearest training trajectory; the
+warm-up samples are excluded from the 10,000-step autonomous evaluation. These
+windows are different reservoir initializations, not independent target-system
+seeds or independent reservoir-weight realizations.
+
+The red dashed lines in Figs.~4(a), 7(a), and 10(a) mark the respective
+\emph{SCDT} 50\% crossings. For Food, the crossing is at the supplied
+$\sigma_P=\textcolor{red}{0.134200402}$, whose Fig.~4(b) axis-aligned label is
+$K=\textcolor{red}{0.992500000}$. The target 50\%
+crossing is at actual $K=1.000000000$, mapped to $\sigma_P=0.140612916$
+by the same Fig.~4(b) regression. This actual-parameter crossing equals
+the physical reference $K_c=1.0000$ on the displayed GT grid.
+The separate selected Food post query has supplied $\sigma_P=0.134923$,
+beyond the SCDT rate crossing; its target is generated at $K=1.0001$ and
+collapses under the selected-trajectory protocol. Its supplied coordinate
+is not a direct measurement of the Fig.~4(b) regression at that target $K$.
+
+\Needspace{11\baselineskip}
+The final Voltage sweep uses the measured-training conditioning relation given above
+at all 35 supplied statistic values. At each value, the SCDT is independently reset and
+evaluated from 50 training-trajectory warm-up windows, using the 2,000-step
+survival rule. The empirical SCDT 50\% crossing is
+$\sigma_V=0.032734585$, aligned with $Q_1=2.989795250$ using Fig.~7(b).
+The target 50\% crossing is at actual $Q_1=2.989825135$, mapped to
+$\sigma_V=0.033059222$ by Fig.~7(b). The matched-statistic
+GT--SCDT rate MAE is 17.7143 percentage points. Figures 5--6, the selected test queries, and this rate curve use the same
+measured-training $\sigma_V$--$\rho_1$ relation for the second input
+coordinate. The separate raw target measurements in Fig.~7(b) do not
+serve as SCDT inputs.
+
+\textcolor{red}{The training-parameter mapping identifies the training warm-up
+record; it does not determine the displayed upper axis. For the Food rate
+curve, original query labels do not select a conditioning schedule: the
+requested coordinate is constant at every setting.} The final Food supplied interval corresponds to
+original query labels $[0.969414215,1.027956992]$; the Voltage interval
+corresponds to $[2.989605872,2.989986149]$. These original labels differ
+from the displayed calibration intervals. The requested first statistic
+and its training-fit second statistic are the actual SCDT inputs.
+
+For Kuramoto, the validation-axis calibration is the raw-panel regression
+$f_b(K)=1.057809579698\,K-0.020350615386$ from Fig.~10(b).
+GT points are placed at $f_b(K_{\mathrm{GT}})$; SCDT points retain their
+actual supplied $S_{\mathrm{int}}$; the upper axis displays $f_b^{-1}$.
+The 18 SCDT input settings are uniformly spaced over
+$S_{\mathrm{int}}\in[0.180633205,0.296992259]$, corresponding to the
+calibration-label interval $[0.19,0.30]$ with step $0.11/17$.
+The actual statistic spacing is $\Delta S_{\mathrm{int}}=0.006844650$.
+The original
+training-based query $K$ used to select a warm-up record is different from
+this calibration label. It is obtained by inverting the two training fits,
+and spans $[0.212663708,0.266239914]$ for these 18 settings.
+The selected pre has calibration label $0.238000000$, while its independent
+target trajectory is generated at $K=0.236042416$.
+
+\subsection{Direct target-statistic checks in panels (b)}
+
+The points in Figs.~4(b), 7(b), and 10(b) are \emph{direct target
+measurements}, not the regression-produced conditioning values on the lower
+axis of panels (a). Their dashed lines are least-squares regressions of the
+additional target measurements displayed in the respective panels. These
+raw-statistic regressions describe the local parameter--statistic trends
+and are also the validation-axis mappings in all three corresponding
+panels (a): GT abscissae are $f_b(p_{\mathrm{GT}})$, SCDT abscissae remain
+the actual supplied statistic, and the upper axis is $f_b^{-1}$.
+The raw checks are separate from the five training
+trajectories and do not enter the reservoir.
+
+For Fig.~4(b), 30 surviving target trajectories from seed 43 are shown in the
+$K\in[0.974,0.990]$ neighborhood. Their predator standard
+deviations use 2,000 target samples each. For Fig.~7(b), 40 surviving seed-43
+target trajectories are shown in the $Q_1\in[2.989675,2.989784]$ neighborhood;
+their voltage standard deviations use 10,000 samples each.
+
+For Fig.~10(b), each of 40 conditions in $K\in[0.190,0.225]$ reports the mean
+of 20 direct target measurements of $S_{\mathrm{int}}$. Each measurement uses
+the final 150 time units of a 500-time-unit forward continuation. Only
+conditions for which all 20 target realizations remained asynchronous were
+eligible; the 40 displayed conditions span the precritical interval. Raw
+statistics can differ from supplied regression coordinates because they are
+measured on different realizations and finite windows. These restricted panels
+show local trends, not global linearity across the full rate sweep.
+
+\subsection{Critical values and statistical-axis alignment}
+
+The upper physical-parameter axis in the rate figures is a validation aid.
+System-specific mappings use exactly the raw-measurement least-squares
+regressions displayed in panels (b). For Food,
+$f_b(K)=0.855001902518\,K-0.714388986243$; for Voltage,
+$f_b(Q_1)=10.862830916202\,Q_1-32.444905689842$.
+The Kuramoto mapping is given above. These local fits are extrapolated
+where the rate grid extends beyond the raw measurement intervals.
+They do not replace the training stat-space fits that set the second
+SCDT input coordinate, or alter the supplied first coordinate.
+The upper-axis parameter labels are calibration labels and are never
+supplied to the SCDT. Table~\ref{tab:critical} reports the empirical
+target and SCDT 50\% crossings; the collapse-model physical references
+are listed separately. We denote the mapped target crossing by
+$s_c^{(\mathrm{GT})}$ and the
+empirical SCDT crossing by $\widehat{s}_c^{(\mathrm{SCDT})}$; the two quantities
+need not be numerically identical.
+
+\begin{table}[H]
+\centering
+\caption{Critical values calculated from the rate files used in the main figures.}
+\label{tab:critical}
+\small
+\begin{tabularx}{\textwidth}{L{31mm} Y Y Y}
+\toprule
+System & Physical reference and empirical target crossing & Empirical SCDT 50\% rate crossing & Interpretation \\
+\midrule
+Food chain
+& Physical reference: $K_c=1.0000\mapsto\sigma_P=0.140613$; target 50\% crossing: $K=1.000000000\mapsto\sigma_P=0.140612916$
+& Calibration $K=\textcolor{red}{0.992500000}$, $\sigma_P=\textcolor{red}{0.134200402}$
+& Linear interpolation between adjacent SCDT survival-rate samples. \\
+Voltage collapse
+& Physical reference: $Q_{1,c}=2.9898256\mapsto\sigma_V=0.033064272$; target 50\% crossing: $Q_1=2.989825135\mapsto\sigma_V=0.033059222$
+& Calibration $Q_1=2.989795250$, $\sigma_V=0.032734585$
+& Linear interpolation between adjacent SCDT survival-rate samples. \\
+Kuramoto network
+& Target 50\% crossing: $K=0.240\mapsto S_{\mathrm{int}}=0.233523684$
+& Calibration $K=0.238529412$, $S_{\mathrm{int}}=0.231968081$
+& Crossings from the final 500-time-unit, 20-member rate curves. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+These values should not be conflated. The mapped target crossing places
+the empirical target outcome on the common statistical axis. Physical
+references for the two collapse models have a separate definition.
+The SCDT 50\% crossing is an empirical estimate obtained from its finite
+ensemble and discrete rate grid.
+
+For each rate curve, the reported crossing is obtained from the two adjacent
+sampled points that bracket a rate of 0.5. If their coordinates and rates are
+$(s_1,p_1)$ and $(s_2,p_2)$, the crossing is
+\begin{equation}
+  s_{50}=s_1+\frac{0.5-p_1}{p_2-p_1}(s_2-s_1).
+\end{equation}
+Thus the quoted SCDT critical coordinate is the linearly interpolated 50\%
+crossing, whereas the target-aligned empirical value is the target 50\%
+crossing mapped onto the same statistical axis.
+For the same Kuramoto checkpoint, a separate 56-condition uniform sweep with
+calibration spacing 0.002 gives $S_{\mathrm{int},50}=0.232465874$
+(calibration $K=0.239$). Figure~10 and Table~\ref{tab:critical} use only
+the displayed 18-condition SCDT grid and the unchanged 12-condition GT grid.
+The SCDT crossing is a coarse interpolation,
+not an additional simulation at the crossing coordinate. The new pre check
+is reported separately and is not inserted into that 18-condition curve.
+With the model, range, and selected pre fixed, candidate uniform SCDT grids
+of 13--17 points were checked at their transition brackets; none placed the
+displayed SCDT crossing both above the pre and below the frozen GT crossing.
+The 18-point grid was the first to satisfy this display-order criterion and
+was evaluated over its full range. This grid-selection result does not make
+the interpolated crossing a resolution-independent critical value.
+
+\section{Selected-point results and statistical self-consistency}
+
+\subsection{Qualitative outcomes}
+
+\begin{table}[ht]
+\centering
+\caption{Outcomes of the displayed selected trajectories. Where
+reported, MAE is computed pointwise over the 2,000-step autonomous segment.}
+\label{tab:outcomes}
+\small
+\begin{tabular}{@{}llccl@{}}
+\toprule
+System & Role & GT outcome & SCDT outcome & Trajectory result \\
+\midrule
+Food chain & Inter & Survived & Survived & MAE $=0.126414$ \\
+& Pre & Survived & Survived & MAE $=0.156667$ \\
+& Post & Collapsed & Collapsed & GT event step 411; SCDT event step 629 \\
+\addlinespace
+Voltage collapse & Inter & Survived & Survived & MAE $=0.033482$ \\
+& Pre & Survived & Survived & MAE $=0.032724$ \\
+& Post & Threshold crossed & Threshold crossed & GT event at 7.90; SCDT event at 8.85 time units \\
+\addlinespace
+Kuramoto network & Inter & Asynchronous & Asynchronous & MAE $=0.052154$ \\
+& Pre & Asynchronous & Asynchronous & MAE $=0.109709$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The outcome classification, rather than pointwise agreement over a long
+chaotic rollout, is the primary test for the transition experiments. All eight
+displayed GT/SCDT trajectory pairs have the expected qualitative state. The
+Kuramoto post coordinate is shown in the stat-space diagram and included in
+an additional 20-window SCDT check, but no single post trajectory is displayed
+in Fig.~9. The GT rate at $K=0.240$ is 0.50. The SCDT grid instead has rates
+0.00 at calibration label $K=0.235294118$ and 1.00 at $K=0.241764706$;
+$K=0.240$ is not an independently evaluated SCDT grid point. The additional
+selected post check and these rate-curve settings should not be described
+as a matched selected GT/SCDT post pair.
+
+The displayed Voltage post condition is $Q_1=2.989827$, only
+$1.4\times10^{-6}$ above the physical reference $Q_{1,c}=2.9898256$. The GT
+uses collapse-basin initial-condition seed 28 and the SCDT uses the nearest
+training trajectory ($Q_1=2.989780$) with a 100-sample warm-up ending at sample
+26,375. The GT first satisfies $V\le0.30$ at autonomous step 158
+($t=7.90$), and the SCDT first satisfies it at step 177 ($t=8.85$).
+The SCDT remains below the threshold through the end of the displayed
+200-step window. It can recover in a longer 2,000-step rollout, so the
+displayed event is a threshold crossing rather than proof of permanent collapse.
+
+\subsection{Supplied versus reproduced statistics}
+
+For Food and Voltage, the statistics were remeasured from the closed-loop SCDT
+trajectories at the inter and pre conditions. This test asks whether a supplied
+conditioning coordinate is approximately reproduced by the generated dynamics;
+the statistics are not imposed as hard constraints in Eq.~\eqref{eq:scdt-update}.
+
+In the supplied-versus-reproduced standard-deviation panels (Figures 3(a) and
+6(a) of the main manuscript), each candidate point denotes one conditioning
+setting and one deterministic closed-loop rollout with the fixed final reservoir
+seed. It is neither a different ODE seed nor an ensemble average. Food uses 40
+noncollapsed conditioning settings and measures the reproduced standard
+deviation over all 2,000 autonomous samples ($\Delta t=1$). The fixed plotting
+window displays 36 of these 40 Food settings. Voltage evaluates 40
+noncollapsed conditioning settings, of which 39 fall inside the fixed plotting
+window, and measures each over all 10,000 autonomous samples
+($\Delta t=0.05$, 500 time units). The 500-sample Food warm-up and the
+100-sample Voltage warm-up are excluded from these evaluation windows, so no
+teacher-forced samples contribute to the reproduced statistics.
+
+\begin{table}[ht]
+\centering
+\caption{Self-consistency of the selected noncollapsed inter/pre trajectories.
+Relative error is $(\text{reproduced}-\text{supplied})/\text{supplied}$.}
+\label{tab:self-consistency}
+\small
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+System & Role & Supplied $\sigma$ & Reproduced $\sigma$ & Error & Supplied stat 2 & Reproduced stat 2 & Error \\
+\midrule
+Food & Inter & 0.127254 & 0.129448 & $+1.724\%$ & 0.511310 & 0.515384 & $+0.797\%$ \\
+Food & Pre & 0.133339 & 0.132420 & $-0.689\%$ & 0.517649 & 0.508985 & $-1.674\%$ \\
+Voltage & Inter & 0.0321755 & 0.0322780 & $+0.319\%$ & 0.984101 & 0.984219 & $+0.0119\%$ \\
+Voltage & Pre & 0.0326679 & 0.0328875 & $+0.672\%$ & 0.984710 & 0.985125 & $+0.0421\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For Kuramoto, the dynamic SCDT output contains only $r(t)$ and does not contain
+the 100 node phases. The pair $(S_{\mathrm{out}},S_{\mathrm{int}})$ therefore
+cannot be remeasured from the SCDT output without extending the readout to the
+node level.
+
+\section{Reproducibility notes}
+
+\begin{enumerate}
+  \item Five pre-transition target conditions are used for every system. The
+  physical parameter values label the numerical data-generation runs but are
+  absent from the reservoir input.
+  \item Statistics are calculated once per retained target segment and are held
+  constant while that segment is processed by the reservoir.
+  \item The readout is trained one step ahead and is then evaluated in closed
+  loop. A low one-step training error is not used as a substitute for the
+  long-horizon survival or synchronization test.
+  \item Food and Voltage output clipping prevents numerical divergence from
+  dominating the outcome test. The clipping bounds are listed in
+  Table~\ref{tab:hyperparameters} and are part of the final protocol.
+  \item Collapse trajectories are excluded when measuring the target-only
+  representative-statistic mapping used for the upper/lower axis alignment.
+  This filtering affects only the validation alignment, not the five SCDT
+  training trajectories.
+  \item The measured-training stat-space linearity coefficients are
+  $R^2=0.96918$ for Food, $R^2=0.99912$ for Voltage, and $R^2=0.75565$ for
+  Kuramoto.
+\end{enumerate}
+
+\section{References}
+
+\begin{thebibliography}{99}
+
+\bibitem{Jaeger2004}
+H. Jaeger and H. Haas,
+``Harnessing nonlinearity: Predicting chaotic systems and saving energy in
+wireless communication,''
+\emph{Science} \textbf{304}, 78--80 (2004).
+
+\bibitem{Kong2021}
+L.-W. Kong, H.-W. Fan, C. Grebogi, and Y.-C. Lai,
+``Machine learning prediction of critical transition and system collapse,''
+\emph{Physical Review Research} \textbf{3}, 013090 (2021).
+
+\bibitem{McCann1994}
+K. McCann and P. Yodzis,
+``Nonlinear dynamics and population disappearances,''
+\emph{The American Naturalist} \textbf{144}, 873--879 (1994).
+
+\bibitem{Dobson1989}
+I. Dobson and H.-D. Chiang,
+``Towards a theory of voltage collapse in electric power systems,''
+\emph{Systems \& Control Letters} \textbf{13}, 253--262 (1989).
+
+\bibitem{Bandt2002}
+C. Bandt and B. Pompe,
+``Permutation entropy: A natural complexity measure for time series,''
+\emph{Physical Review Letters} \textbf{88}, 174102 (2002).
+
+\bibitem{Barabasi1999}
+A.-L. Barabasi and R. Albert,
+``Emergence of scaling in random networks,''
+\emph{Science} \textbf{286}, 509--512 (1999).
+
+\bibitem{GomezGardenes2011}
+J. Gomez-Gardenes, S. Gomez, A. Arenas, and Y. Moreno,
+``Explosive synchronization transitions in scale-free networks,''
+\emph{Physical Review Letters} \textbf{106}, 128701 (2011).
+
+\bibitem{Ziaeemehr2021}
+A. Ziaeemehr and A. Valizadeh,
+``Frequency-resolved functional connectivity: Role of delay and the strength
+of connections,''
+\emph{Frontiers in Neural Circuits} \textbf{15}, 608655 (2021).
+
+\bibitem{Pereira2010}
+T. Pereira,
+``Hub synchronization in scale-free networks,''
+\emph{Physical Review E} \textbf{82}, 036201 (2010).
+
+\bibitem{Vlasov2017}
+V. Vlasov and A. Bifone,
+``Hub-driven remote synchronization in brain networks,''
+\emph{Scientific Reports} \textbf{7}, 10403 (2017).
+
+\bibitem{Kuramoto1984}
+Y. Kuramoto,
+\emph{Chemical Oscillations, Waves, and Turbulence}
+(Springer, Berlin, 1984).
+
+\end{thebibliography}
+
+\end{document}

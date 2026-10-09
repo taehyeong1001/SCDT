@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-10",
+  "change": "System-specific train/test entry points with shared common functions; no numerical-asset changes",
+  "immutable_assets_unchanged": 2578,
+  "unit_tests_passed": 8,
+  "full_readout_refits_after_reorganization": {
+    "food": {
+      "washout": "t > 100",
+      "steps": 2000,
+      "conditions": 5,
+      "relative_readout_error": 0.0,
+      "frozen_recurrent_weights": true,
+      "frozen_training_sequences": true,
+      "ODE_regenerated": false
+    },
+    "power": {
+      "washout": 100,
+      "steps": 60000,
+      "conditions": 5,
+      "effective_pairs": 299495,
+      "relative_readout_error": 2.994109516022149e-09,
+      "frozen_recurrent_weights": true,
+      "frozen_training_sequences": true,
+      "ODE_regenerated": false
+    },
+    "kuramoto": {
+      "washout": 80,
+      "steps": 2301,
+      "conditions": 5,
+      "effective_pairs": 11100,
+      "ridge_normal_equation_residual": 5.5893381019402615e-15,
+      "relative_readout_error": 0.0,
+      "frozen_recurrent_weights": true,
+      "frozen_training_sequences": true,
+      "ODE_regenerated": false
+    }
+  },
+  "default_test_uses_newly_trained_readout": false,
+  "frozen_override_tested": true,
+  "smoke_member_comparisons": {
+    "food/0": {
+      "members": 2,
+      "steps": 1000,
+      "max_absolute_error": 0.0
+    },
+    "power/0": {
+      "members": 2,
+      "steps": 2000,
+      "max_absolute_error": 0.0
+    },
+    "kuramoto/7": {
+      "members": 2,
+      "steps": 10000,
+      "max_absolute_error": 1.1796119636642288e-14
+    },
+    "kuramoto/8": {
+      "members": 2,
+      "steps": 10000,
+      "max_absolute_error": 1.6986412276764895e-14
+    }
+  },
+  "figure_bytes_identical": {
+    "Figure 1.jpg": true,
+    "Figure 2.jpg": true,
+    "Figure 3.jpg": false,
+    "Figure 4.jpg": true,
+    "Figure 5.jpg": true,
+    "Figure 6.jpg": true,
+    "Figure 7.jpg": true,
+    "Figure 8.jpg": true,
+    "Figure 9.jpg": true,
+    "Figure 10.jpg": true,
+    "Figure 11.jpg": true
+  },
+  "figure_visual_comparison": {
+    "Figure 3.jpg": {
+      "pixel_MAE": 0.42250696125216586,
+      "maximum_error": 26.0
+    }
+  },
+  "previous_full_rate_validation": "provenance/packaging_validation.json",
+  "full_rate_sweeps_rerun_after_reorganization": false,
+  "readout_policy": "Submitted model by default; refit requires explicit --readout",
+  "readout_policy_updated": "2026-10-10",
+  "previous_layout_archived_locally": true
+}

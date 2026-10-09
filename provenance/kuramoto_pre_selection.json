@@ -1,0 +1,57 @@
+{
+  "training_max_S_out": 0.0604970601699518,
+  "training_max_S_int": 0.2276920111003056,
+  "minimum_S_int_beyond_both_axes": 0.22883854682886845,
+  "coarse_12_point_crossing": 0.22823463584255116,
+  "dense_56_point_crossing": 0.2324658741613429,
+  "12_point_pre_beyond_both_axes_and_below_crossing_is_impossible": true,
+  "selected": {
+    "index": 24,
+    "S_int": 0.231408064581645,
+    "S_out": 0.06082032630621679,
+    "actual_target_K": 0.23604241582544164,
+    "axis_calibration_K": 0.238,
+    "SCDT_sync_members": 0,
+    "SCDT_members": 20,
+    "GT_seed": 26,
+    "GT_dwell": 0.0,
+    "GT_synchronized": false,
+    "GT_tail_mean_r": 0.1201685333922444,
+    "SCDT_tail_mean_r": 0.2724343098861599,
+    "beyond_both_raw_training_maxima": true
+  },
+  "candidates": [
+    {
+      "index": 23,
+      "S_int": 0.2292924454222491,
+      "S_out": 0.060554164287788585,
+      "actual_target_K": 0.23506830298319292,
+      "axis_calibration_K": 0.236,
+      "SCDT_sync_members": 0,
+      "SCDT_members": 20,
+      "GT_seed": 26,
+      "GT_dwell": 0.0,
+      "GT_synchronized": false,
+      "GT_tail_mean_r": 0.1639528927681043,
+      "SCDT_tail_mean_r": 0.15179625727469923,
+      "beyond_both_raw_training_maxima": true
+    },
+    {
+      "index": 24,
+      "S_int": 0.231408064581645,
+      "S_out": 0.06082032630621679,
+      "actual_target_K": 0.23604241582544164,
+      "axis_calibration_K": 0.238,
+      "SCDT_sync_members": 0,
+      "SCDT_members": 20,
+      "GT_seed": 26,
+      "GT_dwell": 0.0,
+      "GT_synchronized": false,
+      "GT_tail_mean_r": 0.1201685333922444,
+      "SCDT_tail_mean_r": 0.2724343098861599,
+      "beyond_both_raw_training_maxima": true
+    }
+  ],
+  "GT_selected_point_check_is_one_seed_not_ensemble": true,
+  "official_submission_changed": false
+}

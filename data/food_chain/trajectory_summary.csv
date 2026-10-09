@@ -1,0 +1,4 @@
+role,K,gt_status,rc_status,gt_event_step,rc_event_step,gt_tail_mean,rc_tail_mean,trajectory_mae,tail_steps
+inter,0.985,survived,survived,,,0.7622516818700139,0.8125278663688913,0.1264143569084982,100
+pre,0.997,survived,survived,,,0.7555316695294176,0.8473346573815472,0.1566673940986619,100
+post,1.0001,collapsed,collapsed,411.0,629.0,4.127604292640714e-17,0.0,0.1319441475766695,100

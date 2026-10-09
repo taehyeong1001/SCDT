@@ -1,0 +1,9 @@
+role,Q1,stat_1,stat_2,coordinate_source
+train,2.98968,0.031633851446415,0.9834461026653766,direct training trajectory
+train,2.989705,0.0317339283372554,0.983533303418096,direct training trajectory
+train,2.98973,0.0319752237807248,0.9838648955574922,direct training trajectory
+train,2.989755,0.0322486891651361,0.9841906867835036,direct training trajectory
+train,2.98978,0.0325905097052438,0.9846132509710644,direct training trajectory
+inter,2.9897475,0.0321754642235587,0.9841013685957058,stat_2 projected onto measured-training fit
+pre,2.989784,0.0326678995637377,0.9847096197588552,stat_2 projected onto measured-training fit
+post,2.989827,0.0330095355228188,0.9851316050481506,stat_2 projected onto measured-training fit

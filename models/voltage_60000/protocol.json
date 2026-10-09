@@ -1,0 +1,27 @@
+{
+  "model": "train_60000_fixed_reg",
+  "training_steps_per_Q1": 60000,
+  "n_train_points": 5,
+  "train_Q1": [
+    2.98968,
+    2.989705,
+    2.98973,
+    2.989755,
+    2.98978
+  ],
+  "dt": 0.05,
+  "target_transient_time": 500,
+  "training_washout_steps": 100,
+  "n_effective_pairs": 299495,
+  "reservoir_attributes": {
+    "n_reservoir": 900,
+    "spectral_radius": 0.5346534902652815,
+    "sparsity": 0.91,
+    "input_scaling": 2.5660875614414707,
+    "stat_scaling": 0.125,
+    "leakage": 0.1426937443541778,
+    "reg": 0.0871137238477932
+  },
+  "training_statistics": "Measured std and lag-1 AC on 60000 retained target samples.",
+  "normalization": "Fixed original 10000-step feature_min/max, not refitted."
+}

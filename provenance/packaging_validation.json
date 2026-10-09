@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-10",
+  "scope": "Local package assembly validation, not new model selection or Bayesian optimization",
+  "unit_tests_passed": 6,
+  "systems": {
+    "food": {
+      "conditions": 22,
+      "members": 20,
+      "SCDT_crossing": 0.1342004020059304,
+      "GT_crossing": 0.140612916274813,
+      "fresh_rollouts": 440,
+      "all_rate_values_identical": true,
+      "maximum_member_trace_error": 0.0,
+      "fresh_crossing": 0.1342004020059304,
+      "readout_refit": {
+        "washout": "t > 100",
+        "steps": 2000,
+        "conditions": 5,
+        "relative_readout_error": 0.0,
+        "frozen_recurrent_weights": true,
+        "frozen_training_sequences": true,
+        "ODE_regenerated": false
+      },
+      "selected_outputs": {
+        "inter": {
+          "survived": true,
+          "samples": 2000
+        },
+        "pre": {
+          "survived": true,
+          "samples": 2000
+        },
+        "post": {
+          "survived": false,
+          "samples": 2000
+        }
+      },
+      "reconstruction": {
+        "maximum_std_error": 0.0019822166882919046,
+        "mean_std_error": 0.00032333620452981195,
+        "decisions_identical": true,
+        "exact_statistic_equivalence_required": false
+      }
+    },
+    "power": {
+      "conditions": 35,
+      "members": 50,
+      "SCDT_crossing": 0.03273458497180605,
+      "GT_crossing": 0.033059222141686974,
+      "fresh_rollouts": 1750,
+      "all_rate_values_identical": true,
+      "maximum_member_trace_error": 0.0,
+      "fresh_crossing": 0.03273458497180605,
+      "readout_refit": {
+        "washout": 100,
+        "steps": 60000,
+        "conditions": 5,
+        "effective_pairs": 299495,
+        "relative_readout_error": 2.994109516022149e-09,
+        "frozen_recurrent_weights": true,
+        "frozen_training_sequences": true,
+        "ODE_regenerated": false
+      },
+      "selected_outputs": {
+        "inter": {
+          "survived": true,
+          "samples": 10000
+        },
+        "pre": {
+          "survived": true,
+          "samples": 10000
+        },
+        "post": {
+          "survived": false,
+          "samples": 2000
+        }
+      },
+      "reconstruction": {
+        "maximum_std_error": 0.0,
+        "mean_std_error": 0.0,
+        "decisions_identical": true,
+        "exact_statistic_equivalence_required": true
+      }
+    },
+    "kuramoto": {
+      "conditions": 18,
+      "members": 20,
+      "SCDT_crossing": 0.23196808141795572,
+      "GT_crossing": 0.2335236837410409,
+      "fresh_rollouts": 360,
+      "all_rate_values_identical": true,
+      "maximum_member_trace_error": 1.5432100042289676e-14,
+      "fresh_crossing": 0.23196808141795572,
+      "readout_refit": {
+        "washout": 80,
+        "steps": 2301,
+        "conditions": 5,
+        "effective_pairs": 11100,
+        "ridge_normal_equation_residual": 5.5893381019402615e-15,
+        "relative_readout_error": 0.0,
+        "frozen_recurrent_weights": true,
+        "frozen_training_sequences": true,
+        "ODE_regenerated": false
+      },
+      "selected_outputs": {
+        "inter": {
+          "synchronized_members": 0,
+          "members": 20
+        },
+        "pre": {
+          "synchronized_members": 0,
+          "members": 20
+        },
+        "post": {
+          "synchronized_members": 20,
+          "members": 20
+        }
+      }
+    }
+  },
+  "fresh_rate_rollouts_total": 2550,
+  "figure_bytes_identical": {
+    "Figure 1.jpg": true,
+    "Figure 2.jpg": true,
+    "Figure 3.jpg": false,
+    "Figure 4.jpg": true,
+    "Figure 5.jpg": true,
+    "Figure 6.jpg": true,
+    "Figure 7.jpg": true,
+    "Figure 8.jpg": true,
+    "Figure 9.jpg": true,
+    "Figure 10.jpg": true,
+    "Figure 11.jpg": true
+  },
+  "figure_visual_comparison": {
+    "Figure 3.jpg": {
+      "pixel_MAE": 0.42250696125216586,
+      "maximum_error": 26.0
+    }
+  },
+  "coordinate_check_passed": true,
+  "GT_fresh_check_scope": {
+    "food": "One condition and one member, first 1000 samples exactly matched stored baseline",
+    "power": "One condition and one member, maximum voltage trace error 2.1317791976116496e-10",
+    "kuramoto": "One seed across all 21 recorded K conditions; tail means and flags exactly matched",
+    "all_GT_ensembles_freshly_recomputed": false
+  },
+  "limitations": [
+    "Food fresh reconstruction std differs from historical table by at most 0.0019822166882919046; all 41 survival decisions agree. Cause not established.",
+    "Training command refits readouts on frozen ODE sequences and frozen matrices; BO, random-matrix rebuilding and complete training ODE regeneration are not included.",
+    "Figure 3 submission was externally JPEG-reencoded; decoded-pixel comparison is used instead of byte identity.",
+    "Numerical equivalence on other Python, BLAS, ODE-solver or rendering environments is not guaranteed."
+  ],
+  "original_artifacts_modified": false,
+  "GitHub_upload_performed": false,
+  "license_selected": false
+}

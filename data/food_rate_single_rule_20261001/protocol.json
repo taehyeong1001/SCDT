@@ -1,0 +1,28 @@
+{
+  "conditioning_rule": "Requested normalized statistic vector held constant during every warm-up and autonomous sample",
+  "ramp_steps": 0,
+  "hold_steps": 0,
+  "critical_parameter_branch": false,
+  "checkpoint_retrained": false,
+  "GT_recomputed": false,
+  "training_source_and_windows": "Exactly the source and 20 windows recorded for each previous matching-range condition",
+  "conditions": 22,
+  "members_per_condition": 20,
+  "fresh_rollouts": 440,
+  "warmup_samples": 500,
+  "autonomous_samples": 1000,
+  "sampling_interval": 1,
+  "decision": "All autonomous samples finite and final-500-sample mean predator P > 0.05",
+  "official_artifacts_modified": true,
+  "source_sha256": {
+    "Reservoir_with_a_static_Channel/experiments/matched_food_power_final_20261001/data/food_checkpoint.pkl": "4ac2258183136e9c5d73cb0519eca59cc7b08708c29146ae370178fdb9d2bfae",
+    "Reservoir_with_a_static_Channel/experiments/matched_food_power_final_20261001/data/food/gt_rate.csv": "de6f44903bac3598a67492ac6066f2889c68d068bc786b9ff326f3868c7a222d",
+    "Reservoir_with_a_static_Channel/experiments/matched_food_power_final_20261001/data/food/tasks.json": "4a2f6a21cecacd606a99634d4ff4fbd8e097fbfe6796843afdf9a98b79de4570",
+    "SCDT/Code/src/food_chain/experiment.py": "5a8b786ae0dc778446edf793756a98748340ad4b6c2ceda8816879367c0bc6a9"
+  },
+  "reproduction_script": "System_Food_Chain/test.py",
+  "reproduction_inputs": "evaluation_settings.json contains only requested coordinates, fixed training record indices and warm-up windows; no critical parameter or conditional schedule",
+  "reproduction_command": "python System_Food_Chain/test.py",
+  "reproduction_script_sha256": "5e708e6ded743df3b74af359ea2b34181d444d6bf5c83344e117eed09b8ed649",
+  "historical_evaluator_sha256": "004f865d789a4b38bbd5e23cd7c7b671b28a22afc7fa18854a321f56e84e44ad"
+}

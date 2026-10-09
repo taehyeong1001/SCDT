@@ -1,0 +1,53 @@
+{
+  "model": "train_60000_fixed_reg",
+  "training_steps_per_Q1": 60000,
+  "n_train_points": 5,
+  "train_Q1": [
+    2.98968,
+    2.989705,
+    2.98973,
+    2.989755,
+    2.98978
+  ],
+  "dt": 0.05,
+  "target_transient_time": 500,
+  "training_washout_steps": 100,
+  "n_effective_pairs": 299495,
+  "reservoir_attributes": {
+    "n_reservoir": 900,
+    "spectral_radius": 0.5346534902652815,
+    "sparsity": 0.91,
+    "input_scaling": 2.5660875614414707,
+    "stat_scaling": 0.125,
+    "leakage": 0.1426937443541778,
+    "reg": 0.0871137238477932
+  },
+  "source_hashes": {
+    "src/voltage_collapse/Reservoir/trajectory_prediction.py": "a050193e818bb274de8234a5a8b78fb7c9d73cf41a2021d225a859883d13242f",
+    "src/voltage_collapse/Reservoir/best_hyperparameters_rate.pkl": "4547497c66bd93bad99b06a0cda6f07a0be01eacc8512dbc4c1be31d96cab118",
+    "src/voltage_collapse/solver/voltage_model.py": "87e3302dd2ee26b9c161a325482668c4cbd16e93e494f0b6731a5814e6220477"
+  },
+  "bundle_hashes": {
+    "reference_trajectory.csv": "591f26b25edaf49ac5a971b44f6109a0789797564fcd978e90740910b576ca5c",
+    "checkpoint.npz": "fa6f6b8159067465c396e4bd537b6519c34a753fe355c5a9dc7b5fea7a8dcff3",
+    "reference_points.csv": "f9611742a9ebe30b590736547ab4d6fb7606580c785a3775235d4e36424cc0cd",
+    "train_4.npz": "22c5a5f2435fecbea498904643ec2bf855069b96a9305e962721f95ec0dbf38b",
+    "train_0.npz": "668ecbb3f635ce202a7caaf0c1fbb685d94d16dd94a88050231110546e882a95",
+    "train_1.npz": "34171201920b489d11d0406b0eaa28612dcb53d3c759a677f78e5a39105b52e6",
+    "train_3.npz": "2c4ffe3dc1a6fb5d1107d53a63c031777d10f0b17b8033a8d9ecfda6ea8d2a1d",
+    "train_2.npz": "7d34f8460c9e4fab3c9519eeaa3bb5eeb1a8f6f2bfaa8d180471335fd1da7b37",
+    "reference_survival.csv": "b7b8360ccca8459316ff49a79cd8f0eb78356bdc107f9bcc609edf352b19347f"
+  },
+  "training_statistics": "Measured std and lag-1 AC on 60000 retained target samples.",
+  "normalization": "Fixed original 10000-step feature_min/max, not refitted.",
+  "test_statistics": "Existing selected test coordinates unchanged; sigma grid uses the original training-stat regression.",
+  "warmup": "100 target samples from nearest training Q1; original prefix endpoints1500,5500,9500; displayed end9500. Not target test trajectory warm-up.",
+  "closed_loop": "10000 steps, including all initial predicted samples; no feeding after warm-up. Constant conditioning, including post; no special post hold/ramp.",
+  "exclusion": "Exclude entire measured prefix if any nonfinite sample or V<=0.30; record later recovery separately. Threshold crossing does not imply permanent collapse.",
+  "rate": "35 uniform Q1 points2.989620..2.989960,10 warm-up windows per point,2000 steps. Original Q1-to-std linear regression followed by original std-to-AC regression; no post ramp. This is a uniform conditioning protocol, unlike the older piecewise-input/ramped rate.",
+  "gt_rate": "Packaged reference_survival.csv gt_survival_rate interpolated to Q1; not recomputed; its evaluation horizon is not established by this file.",
+  "gt_trajectory": "Existing ODE CSV retained at identical test Q1; length2000. These GT runs are not phase-aligned to the reference-training warm-up signal.",
+  "selection": "User-approved longer-training candidate based on precritical reconstruction. New post/rate outputs are diagnostic, not selection targets.",
+  "backup": "SCDT/\ubcf4\uad00/trial_cleanup_20260908_160508/realfinal/archive/before_voltage_60000_20260908_133934",
+  "origin": "SCDT/\ubcf4\uad00/trial_cleanup_20260908_160508/voltage_longer_training_0908"
+}

@@ -1,0 +1,149 @@
+{
+  "scope": "Frozen final paper evaluation; training refits use frozen ODE sequences and recurrent matrices",
+  "food": {
+    "training_K": [
+      0.974,
+      0.978,
+      0.98,
+      0.982,
+      0.988
+    ],
+    "training_ODE_seeds": [
+      8,
+      5,
+      1,
+      0,
+      8
+    ],
+    "training_inputs": 2000,
+    "training_state_condition": "t > 100",
+    "warmup": 500,
+    "rate_conditions": 22,
+    "rate_members": 20,
+    "rate_steps": 1000,
+    "rate_tail": 500,
+    "threshold": 0.05,
+    "rate_conditioning": "requested statistic constant, no ramp/hold/K-critical switch",
+    "selected_post": {
+      "steps": 2000,
+      "hold": 500,
+      "ramp": 50
+    },
+    "hyperparameters": {
+      "N_r": 1000,
+      "average_degree": 113,
+      "spectral_radius": 1.5,
+      "leakage_rate": 0.01,
+      "regularization": 0.00183011,
+      "input_scaling": 5.0,
+      "param_scales": [
+        0.1,
+        0.1
+      ],
+      "param_biases": [
+        -1.6317999432230639,
+        0.0517568554782466
+      ]
+    }
+  },
+  "power": {
+    "training_Q1": [
+      2.98968,
+      2.989705,
+      2.98973,
+      2.989755,
+      2.98978
+    ],
+    "training_samples": 60000,
+    "washout": 100,
+    "warmup": 100,
+    "selected_inter_pre_steps": 10000,
+    "selected_post_steps": 2000,
+    "post_display_samples": 200,
+    "reconstruction_end": 9500,
+    "selected_post_end": 26375,
+    "rate_conditions": 35,
+    "rate_members": 50,
+    "rate_steps": 2000,
+    "criterion": "all finite and every V > 0.30",
+    "hyperparameters": {
+      "n_reservoir": 900,
+      "spectral_radius": 0.5346534902652815,
+      "sparsity": 0.91,
+      "input_scaling": 2.5660875614414707,
+      "stat_scaling": 0.125,
+      "leakage": 0.1426937443541778,
+      "reg": 0.0871137238477932
+    }
+  },
+  "kuramoto": {
+    "training_K": [
+      0.218,
+      0.221,
+      0.226,
+      0.229,
+      0.232
+    ],
+    "training_samples": 2301,
+    "washout": 80,
+    "warmup": 60,
+    "rate_conditions": 18,
+    "rate_members": 20,
+    "rate_steps": 10000,
+    "rate_tail": 3000,
+    "r_threshold": 0.5,
+    "dwell_threshold": 0.8,
+    "GT_members": 20,
+    "GT_duration": 500,
+    "GT_tail_time": 150,
+    "GT_continuation_range": [
+      0.15,
+      0.35
+    ],
+    "paper_GT_range": [
+      0.19,
+      0.3
+    ],
+    "GT_step_K": 0.01,
+    "selected_pre": {
+      "index": 24,
+      "S_int": 0.231408064581645,
+      "S_out": 0.06082032630621679,
+      "actual_target_K": 0.23604241582544164,
+      "axis_calibration_K": 0.238,
+      "SCDT_sync_members": 0,
+      "SCDT_members": 20,
+      "GT_seed": 26,
+      "GT_dwell": 0.0,
+      "GT_synchronized": false,
+      "GT_tail_mean_r": 0.1201685333922444,
+      "SCDT_tail_mean_r": 0.2724343098861599,
+      "beyond_both_raw_training_maxima": true,
+      "MAE_first_2000": 0.10970896386276269,
+      "warmup_source_K": 0.232,
+      "SCDT_tail_std_r": 3.0363126494196435e-15
+    },
+    "axis_calibration": {
+      "slope": 1.0578095796979337,
+      "intercept": -0.020350615386463156,
+      "center": 0.20736874999999996,
+      "scale": 0.0335,
+      "normalized_slope": 0.03543662091988078,
+      "normalized_intercept": 0.19900603489352267,
+      "r_squared": 0.9660359340878768,
+      "mean_absolute_residual": 0.0016911165339725295,
+      "max_absolute_residual": 0.0039107642974821055
+    },
+    "hyperparameters": {
+      "clip_value": 5.716762689842416,
+      "input_scaling": 0.04672287231023634,
+      "leakage": 0.09044233508998625,
+      "n_reservoir": 2000.0,
+      "reg": 10.0,
+      "seed": 23,
+      "sparsity": 0.972323118110333,
+      "spectral_radius": 1.1538705388850483,
+      "stat_scaling": 0.4542375642817811
+    }
+  }
+}

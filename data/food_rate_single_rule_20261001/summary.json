@@ -1,0 +1,38 @@
+{
+  "protocol": "Requested conditioning constant during warm-up and autonomous prediction at every condition",
+  "conditions": 22,
+  "ensemble_members": 20,
+  "fresh_rollouts": 440,
+  "autonomous_samples": 1000,
+  "tail_mean_samples": 500,
+  "supplied_statistic_range": [
+    0.119237868711871,
+    0.1491629352999898
+  ],
+  "single_rule_downward_crossings": [
+    0.1342004020059304
+  ],
+  "single_rule_calibration_crossings": [
+    0.9924999999999999
+  ],
+  "old_mixed_rule_downward_crossings": [
+    0.13363040073758528
+  ],
+  "GT_crossing_parameter": 1.0,
+  "GT_crossing_mapped_stat": 0.14061291627481307,
+  "MAE_percentage_points": 21.13636363636363,
+  "old_MAE_percentage_points": 25.22727272727272,
+  "rule_comparison_at_bracket": [
+    {
+      "condition_index": 10,
+      "supplied_stat": 0.133487900420499,
+      "rate": 0.55
+    },
+    {
+      "condition_index": 11,
+      "supplied_stat": 0.1349129035913618,
+      "rate": 0.45
+    }
+  ],
+  "official_artifacts_modified": true
+}

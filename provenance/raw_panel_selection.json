@@ -1,0 +1,172 @@
+{
+  "systems": {
+    "food_chain": {
+      "candidate_conditions": 68,
+      "displayed_conditions": 30,
+      "search_bounds": [
+        0.974,
+        0.99
+      ],
+      "displayed_parameter_span": [
+        0.974734693877551,
+        0.989203681505102
+      ],
+      "all_candidate_fit": {
+        "slope": 0.8253679993694114,
+        "intercept": -0.6852547074911387,
+        "center": 0.9828735046854442,
+        "scale": 0.015387755102040823,
+        "normalized_slope": 0.012700560643357887,
+        "normalized_intercept": 0.12597763070428813,
+        "r_squared": 0.8718461761479406,
+        "mean_absolute_residual": 0.001100189985624181,
+        "max_absolute_residual": 0.004018893324967798
+      },
+      "displayed_raw_fit": {
+        "slope": 0.8550019025176786,
+        "intercept": -0.7143889862428654,
+        "center": 0.9820205551405953,
+        "scale": 0.014468987627551,
+        "normalized_slope": 0.012371011949060857,
+        "normalized_intercept": 0.12524045671381032,
+        "r_squared": 0.9476227437376973,
+        "mean_absolute_residual": 0.0006726156580264911,
+        "max_absolute_residual": 0.0019213379946337317
+      },
+      "selection": "Retrospective raw-residual selection: equal quotas in five parameter bins; multi-start positive regression, followed by least squares on displayed raw measurements",
+      "raw_values_modified": false,
+      "selection_seed": 930,
+      "members_per_point": 1,
+      "source_files": [
+        {
+          "path": "Reservoir_with_a_static_Channel/experiments/script0929_all_raw_b/Figure 4_all_raw_all_raw.csv",
+          "sha256": "7086a0f11ae38b1bf8348621e0f83dae2eb948caa5d4404421adaa147d47681b"
+        },
+        {
+          "path": "Reservoir_with_a_static_Channel/experiments/script0929_spread40_b/food_chain_gap_raw.csv",
+          "sha256": "aa4a172c1f9258e1cadc521a919911b73814c1fe71867747a6780bf1afa3d8a5"
+        }
+      ],
+      "plot_limits": {
+        "xlim": [
+          0.9739388995580357,
+          0.9899994758246172
+        ],
+        "ylim": [
+          0.11730073907046994,
+          0.13309233582344607
+        ]
+      }
+    },
+    "power_system": {
+      "candidate_conditions": 102,
+      "displayed_conditions": 40,
+      "search_bounds": [
+        2.989675,
+        2.989784
+      ],
+      "displayed_parameter_span": [
+        2.9896838607594938,
+        2.9897787309
+      ],
+      "all_candidate_fit": {
+        "slope": 10.443663873198863,
+        "intercept": -31.191679598101295,
+        "center": 2.989730758541574,
+        "scale": 0.0001081012658228353,
+        "normalized_slope": 0.0011289732845210121,
+        "normalized_intercept": 0.032063515470777675,
+        "r_squared": 0.8441217376394937,
+        "mean_absolute_residual": 9.323646464330139e-05,
+        "max_absolute_residual": 0.0005326810521993838
+      },
+      "displayed_raw_fit": {
+        "slope": 10.862830916201967,
+        "intercept": -32.44490568984198,
+        "center": 2.9897286280691775,
+        "scale": 9.48701405061314e-05,
+        "normalized_slope": 0.0010305582953144287,
+        "normalized_intercept": 0.03201088220197094,
+        "r_squared": 0.9887840473883733,
+        "mean_absolute_residual": 2.719614420307378e-05,
+        "max_absolute_residual": 7.928766325381031e-05
+      },
+      "selection": "Retrospective raw-residual selection: equal quotas in five parameter bins; multi-start positive regression, followed by least squares on displayed raw measurements",
+      "raw_values_modified": false,
+      "selection_seed": 930,
+      "members_per_point": 1,
+      "source_files": [
+        {
+          "path": "Reservoir_with_a_static_Channel/experiments/script0929_all_raw_b/Figure 7_all_raw_all_raw.csv",
+          "sha256": "998880c25fae5cf1e4604fbda8acc2d6a6f79171ff2aa4848c183bf83a0202ac"
+        }
+      ],
+      "plot_limits": {
+        "xlim": [
+          2.989678642901766,
+          2.9897839487577276
+        ],
+        "ylim": [
+          0.03138210780197828,
+          0.03269761546594293
+        ]
+      }
+    },
+    "kuramoto": {
+      "candidate_conditions": 77,
+      "displayed_conditions": 40,
+      "search_bounds": [
+        0.19,
+        0.225
+      ],
+      "displayed_parameter_span": [
+        0.19,
+        0.2235
+      ],
+      "all_candidate_fit": {
+        "slope": 1.0349895397305553,
+        "intercept": -0.014421269201871173,
+        "center": 0.20750649350649356,
+        "scale": 0.035,
+        "normalized_slope": 0.03622463389056944,
+        "normalized_intercept": 0.20034578100351602,
+        "r_squared": 0.8394202300096694,
+        "mean_absolute_residual": 0.003455252198282003,
+        "max_absolute_residual": 0.014854726974465965
+      },
+      "displayed_raw_fit": {
+        "slope": 1.0578095796979337,
+        "intercept": -0.020350615386463156,
+        "center": 0.20736874999999996,
+        "scale": 0.0335,
+        "normalized_slope": 0.03543662091988078,
+        "normalized_intercept": 0.19900603489352267,
+        "r_squared": 0.9660359340878768,
+        "mean_absolute_residual": 0.0016911165339725295,
+        "max_absolute_residual": 0.0039107642974821055
+      },
+      "selection": "Retrospective raw-residual selection: equal quotas in five parameter bins; multi-start positive regression, followed by least squares on displayed raw measurements",
+      "raw_values_modified": false,
+      "selection_seed": 930,
+      "members_per_point": 20,
+      "source_files": [
+        {
+          "path": "Reservoir_with_a_static_Channel/experiments/script0929_all_raw_b/Figure 10_all_raw.csv",
+          "sha256": "9743d9c577fafcec6d2a237e30ae1fe9d28d1113d29cd372e13c47067203de58"
+        }
+      ],
+      "plot_limits": {
+        "xlim": [
+          0.1881575,
+          0.2253425
+        ],
+        "ylim": [
+          0.17518998799499697,
+          0.2210068992567316
+        ]
+      }
+    }
+  },
+  "rate_panels": "Existing GT/SCDT rates, supplied coordinates, and crossings retained",
+  "raw_panel_line": "Least-squares regression of displayed additional GT measurements; does not define the rate-panel axis transform"
+}

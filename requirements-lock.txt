@@ -1,0 +1,10 @@
+antropy==0.1.9
+matplotlib==3.9.4
+networkx==3.2.1
+numpy==2.0.2
+pandas==2.3.3
+scikit-learn==1.6.1
+scipy==1.13.1
+tqdm==4.67.3
+pillow==11.3.0
+threadpoolctl==3.6.0

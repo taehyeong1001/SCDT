@@ -1,0 +1,3 @@
+system,point_id,parameter,role,seed,survived,raw_std,raw_secondary,n_samples
+food_chain,2000,0.97325,sweep,42,True,0.12139547450135893,0.5081957085371321,2000
+food_chain,2000,0.97325,sweep,43,True,0.1231647541453945,0.5081922981817213,2000

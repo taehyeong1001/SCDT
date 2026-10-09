@@ -1,0 +1,24 @@
+{
+  "food_chain": {
+    "slope": 0.8550019025176786,
+    "intercept": -0.7143889862428654,
+    "center": 0.9820205551405953,
+    "scale": 0.014468987627551,
+    "normalized_slope": 0.012371011949060857,
+    "normalized_intercept": 0.12524045671381032,
+    "r_squared": 0.9476227437376973,
+    "mean_absolute_residual": 0.0006726156580264911,
+    "max_absolute_residual": 0.0019213379946337317
+  },
+  "power_system": {
+    "slope": 10.862830916201967,
+    "intercept": -32.44490568984198,
+    "center": 2.9897286280691775,
+    "scale": 9.48701405061314e-05,
+    "normalized_slope": 0.0010305582953144287,
+    "normalized_intercept": 0.03201088220197094,
+    "r_squared": 0.9887840473883733,
+    "mean_absolute_residual": 2.719614420307378e-05,
+    "max_absolute_residual": 7.928766325381031e-05
+  }
+}

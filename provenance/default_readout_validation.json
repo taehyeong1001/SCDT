@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-10",
+  "default_policy": "submitted_model",
+  "refit_policy": "explicit_readout_only",
+  "conditions": 35,
+  "members_per_condition": 50,
+  "autonomous_steps": 2000,
+  "default_equals_submitted_rates": true,
+  "default": {
+    "condition_18_rate": 0.12,
+    "crossing_sigma": 0.03273458497180605,
+    "crossing_Q1": 2.98979525,
+    "MAE_percentage_points": 17.714285714285715
+  },
+  "refitted": {
+    "condition_18_rate": 0.26,
+    "crossing_sigma": 0.03274668221532637,
+    "crossing_Q1": 2.9897963636363634,
+    "MAE_percentage_points": 17.314285714285713
+  },
+  "refit_differing_conditions": [
+    18
+  ],
+  "GT_crossing_sigma": 0.033059222141686974,
+  "unit_tests_passed": 8,
+  "numerical_paper_artifacts_modified": false,
+  "model_record": {
+    "kind": "submitted",
+    "artifact": "models/voltage_60000/refitted_readout.npz",
+    "sha256": "fc1d228888043ad13a62d94d039b9e74e0054e0f9e0413843f878dfcf2194ee0"
+  }
+}

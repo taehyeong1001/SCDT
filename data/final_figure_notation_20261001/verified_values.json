@@ -1,0 +1,204 @@
+{
+  "training": [
+    {
+      "K": 0.218,
+      "stat_1": 0.0561961539140804,
+      "stat_2": 0.1830955257013521
+    },
+    {
+      "K": 0.221,
+      "stat_1": 0.0571670983521832,
+      "stat_2": 0.2035945166915084
+    },
+    {
+      "K": 0.226,
+      "stat_1": 0.0565185459488749,
+      "stat_2": 0.2086762777464709
+    },
+    {
+      "K": 0.229,
+      "stat_1": 0.0589101192337652,
+      "stat_2": 0.2162419226562039
+    },
+    {
+      "K": 0.232,
+      "stat_1": 0.0604970601699518,
+      "stat_2": 0.2276920111003056
+    }
+  ],
+  "hyperparameters": {
+    "clip_value": 5.716762689842416,
+    "input_scaling": 0.04672287231023634,
+    "leakage": 0.09044233508998625,
+    "n_reservoir": 2000.0,
+    "reg": 10.0,
+    "seed": 23,
+    "sparsity": 0.972323118110333,
+    "spectral_radius": 1.1538705388850483,
+    "stat_scaling": 0.4542375642817811
+  },
+  "stat_space_fit": {
+    "slope": 7.948614050530472,
+    "intercept": -0.2520292356537978,
+    "R_squared": 0.7556484261396091
+  },
+  "K_to_S_out_fit": {
+    "slope": 0.2732353038419846,
+    "intercept": -0.003674794901443829
+  },
+  "axis_calibration": {
+    "slope": 1.0578095796979337,
+    "intercept": -0.020350615386463156,
+    "center": 0.20736874999999996,
+    "scale": 0.0335,
+    "normalized_slope": 0.03543662091988078,
+    "normalized_intercept": 0.19900603489352267,
+    "r_squared": 0.9660359340878768,
+    "mean_absolute_residual": 0.0016911165339725295,
+    "max_absolute_residual": 0.0039107642974821055
+  },
+  "inter": {
+    "S_int": 0.21828489226022113,
+    "S_out": 0.059169324982212626,
+    "actual_target_K": 0.23,
+    "warmup_source_K": 0.229,
+    "MAE_first_2000": 0.05215373882668674,
+    "GT_tail_mean_r": 0.12341088051791324,
+    "SCDT_tail_mean_r": 0.0998918867630962
+  },
+  "pre": {
+    "index": 24,
+    "S_int": 0.231408064581645,
+    "S_out": 0.06082032630621679,
+    "actual_target_K": 0.23604241582544164,
+    "axis_calibration_K": 0.238,
+    "SCDT_sync_members": 0,
+    "SCDT_members": 20,
+    "GT_seed": 26,
+    "GT_dwell": 0.0,
+    "GT_synchronized": false,
+    "GT_tail_mean_r": 0.1201685333922444,
+    "SCDT_tail_mean_r": 0.2724343098861599,
+    "beyond_both_raw_training_maxima": true,
+    "MAE_first_2000": 0.10970896386276269,
+    "warmup_source_K": 0.232,
+    "SCDT_tail_std_r": 3.0363126494196435e-15
+  },
+  "post": {
+    "actual_query_K": 0.24,
+    "S_out": 0.06190167802063247,
+    "S_int": 0.24000331201241476,
+    "n_members": 20,
+    "synchronized_members": 20
+  },
+  "coarse_SCDT_crossing_S_int": 0.23196808141795572,
+  "coarse_SCDT_crossing_calibration_K": 0.23852941176470588,
+  "GT_crossing_actual_K": 0.24,
+  "GT_crossing_S_int": 0.2335236837410409,
+  "mapped_physical_reference_S_int": 0.2304560359599169,
+  "rate_MAE": 0.03560606060606084,
+  "raw_recurrent_density": 0.972209,
+  "post_clip_ceiling_r": 0.5505132775134437,
+  "previous_pre": {
+    "candidate": 2,
+    "S_int": 0.22801758594565294,
+    "S_out": 0.060393776644296064,
+    "calibration_K": 0.23479481193868534,
+    "original_query_K": 0.23448130839926729,
+    "warmup_source_K": 0.232,
+    "scdt_sync_rate": 0.0,
+    "scdt_tail_mean_r": 0.11668171122900825,
+    "scdt_median_tail_std_r": 2.750543456804476e-15,
+    "gt_dwell": 0.0,
+    "gt_synchronized": false,
+    "gt_tail_mean_r": 0.15626675484546954,
+    "gt_tail_std_r": 0.08316754590623465,
+    "beyond_training_S_int": true,
+    "below_coarse_crossing": true,
+    "query_beyond_training_K": true,
+    "S_out_above_raw_training_max": false,
+    "MAE_first_2000": 0.052545601606638036
+  },
+  "SCDT_conditions": 18,
+  "GT_conditions": 12,
+  "rate_MAE_definition": "SCDT 18-point piecewise-linear curve evaluated at the 12 directly measured GT positions; no new GT evaluation",
+  "step_K": 0.006470588235294118,
+  "step_S_int": 0.006844650221574877,
+  "grid_protocol": {
+    "selected_n_conditions": 18,
+    "minimum_among_denser_grids_tested": true,
+    "smaller_tested_counts": [
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "selection_requirements": "Fixed right-of-training pre lies before displayed 50% crossing; SCDT crossing lies before frozen GT crossing",
+    "checkpoint_changed": false,
+    "GT_changed": false,
+    "pre_changed": false,
+    "ensemble": 20,
+    "warmup_samples": 60,
+    "autonomous_samples": 10000,
+    "evaluation_tail_samples": 3000,
+    "rate_rule": "At least 80% of final 3000 samples satisfy r >= 0.5",
+    "selected_pre": {
+      "index": 24,
+      "S_int": 0.231408064581645,
+      "S_out": 0.06082032630621679,
+      "actual_target_K": 0.23604241582544164,
+      "axis_calibration_K": 0.238,
+      "SCDT_sync_members": 0,
+      "SCDT_members": 20,
+      "GT_seed": 26,
+      "GT_dwell": 0.0,
+      "GT_synchronized": false,
+      "GT_tail_mean_r": 0.1201685333922444,
+      "SCDT_tail_mean_r": 0.2724343098861599,
+      "beyond_both_raw_training_maxima": true
+    },
+    "range_axis_K": [
+      0.19,
+      0.3
+    ],
+    "range_S_int": [
+      0.18063320475614425,
+      0.29699225852291694
+    ],
+    "selected_grid": {
+      "n_conditions": 18,
+      "step_K": 0.006470588235294118,
+      "step_S_int": 0.006844650221574877,
+      "SCDT_crossing_S_int": 0.23196808141795572,
+      "SCDT_crossing_axis_K": 0.23852941176470588,
+      "pre_before_crossing": true,
+      "SCDT_before_GT": true,
+      "passes": true,
+      "bracket": [
+        {
+          "supplied_stat": 0.2285457563071683,
+          "equivalent_parameter": 0.23529411764705885,
+          "original_query_parameter": 0.23472449845063464,
+          "S_out": 0.060460224751872765,
+          "rate": 0.0,
+          "n_members": 20,
+          "warmup_source_K": 0.232,
+          "cached": true
+        },
+        {
+          "supplied_stat": 0.23539040652874316,
+          "equivalent_parameter": 0.24176470588235294,
+          "original_query_parameter": 0.23787603999908616,
+          "S_out": 0.06132133716443456,
+          "rate": 1.0,
+          "n_members": 20,
+          "warmup_source_K": 0.232,
+          "cached": true
+        }
+      ]
+    },
+    "official_submission_changed": false,
+    "checkpoint_sha256": "866105dfd9f5b579801113a4803eb9ae0928cb302f33ecf10d53c9ce1724bb81"
+  }
+}

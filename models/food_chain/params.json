@@ -1,0 +1,16 @@
+{
+  "N_r": 1000,
+  "average_degree": 113,
+  "spectral_radius": 1.5,
+  "leakage_rate": 0.01,
+  "regularization": 0.00183011,
+  "input_scaling": 5.0,
+  "param_scales": [
+    0.1,
+    0.1
+  ],
+  "param_biases": [
+    -1.6317999432230639,
+    0.0517568554782466
+  ]
+}

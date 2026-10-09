@@ -1,0 +1,10 @@
+antropy
+matplotlib
+networkx
+numpy
+pandas
+scikit-learn
+scipy
+tqdm
+pillow
+threadpoolctl

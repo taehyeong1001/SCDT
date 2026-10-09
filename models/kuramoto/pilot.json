@@ -1,0 +1,16 @@
+{
+  "dataset": "lowmax",
+  "config": 7,
+  "reg": 10.0,
+  "train_max_sigma": 0.2276920111003056,
+  "pre_sigma": 0.22914410213631786,
+  "base_seed": 23,
+  "candidate": "lowmax_7_reg10.0_seed23",
+  "train_rate": 0.0,
+  "pre_rate": 0.0,
+  "early_rate": 1.0,
+  "post_rate": 1.0,
+  "pre_mean_r": 0.14646963601988497,
+  "training_mse": 0.0009353195329735278,
+  "score": 0.0
+}
