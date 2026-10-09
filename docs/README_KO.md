@@ -36,4 +36,4 @@ Power 재학습 readout은 제출본과 약 3 × 10⁻⁹의 상대 오차가 �
 
 수치·가중치·Supplementary 원본은 바꾸지 않았습니다. Food 재구성 통계의 기존 표 대비 최대 약 0.00198 차이는 그대로 검증 기록에 명시합니다. 자세한 설정과 제한은 `REPRODUCTION.md`, `VALIDATION_KO.md`, `provenance/packaging_validation.json`에 있습니다.
 
-이전 폴더 구조는 로컬 보관 폴더에 백업되어 있으며 실행에 필요하지 않습니다. GitHub 업로드 및 라이선스 결정은 아직 진행하지 않았습니다.
+이전 폴더 구조는 로컬 보관 폴더에 백업되어 있으며 실행에 필요하지 않습니다. 공개 저장소는 https://github.com/taehyeong1001/SCDT 입니다. 원본 코드와 사용·재현 안내 문서에는 MIT 라이선스를 적용했습니다. 데이터·모델 가중치·논문용 그림·Supplementary 및 외부 자료는 해당 허용 범위에서 제외합니다. 상세 범위는 `LICENSE_NOTICE.md`를 참고하세요.

@@ -144,7 +144,7 @@ The actual target K/Q1 for a selected trajectory and its axis-calibration label 
 
 ## Publication checklist
 
-No repository has been created or uploaded by this packaging operation. No license is selected automatically: the authors must approve a license before publishing (see `LICENSE_NOTICE.md`). Do not publish professor correspondence, historical review documents, desktop metadata or private work logs.
+The package is published at https://github.com/taehyeong1001/SCDT. Original software source code and usage/reproduction documentation use the MIT License; research/publication assets and third-party materials are excluded from that grant (see `LICENSE_NOTICE.md`). Do not publish professor correspondence, historical review documents, desktop metadata or private work logs.
 
 The Kuramoto checkpoint is approximately 31 MiB. Use Git rather than the browser uploader for that file, or decide on Git LFS/data hosting. Keep model/data hashes unchanged when moving assets. Run `verify` after copying the package to a new location.
 

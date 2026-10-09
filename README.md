@@ -77,6 +77,10 @@ python run.py test
 
 Figure rendering uses frozen numeric data; it does not rerun training or prediction. `run.py` remains as an optional compatibility runner, not a required entry point.
 
-See [the Korean guide](docs/README_KO.md), [detailed protocols](docs/REPRODUCTION.md), [validation](docs/VALIDATION_KO.md) and [Supplementary Material](docs/SCDT_Supplementary_Material.pdf). Food fresh reconstruction std differs from its historical table by up to approximately 0.00198, while all survival decisions agree; reference measurements are not overwritten. Public licensing remains subject to author approval.
+See [the Korean guide](docs/README_KO.md), [detailed protocols](docs/REPRODUCTION.md), [validation](docs/VALIDATION_KO.md) and [Supplementary Material](docs/SCDT_Supplementary_Material.pdf). Food fresh reconstruction std differs from its historical table by up to approximately 0.00198, while all survival decisions agree; reference measurements are not overwritten.
 
 The layout follows the system-specific train/predict and shared-function organization of [Kong et al.'s code repository](https://github.com/lw-kong/Reservoir_with_a_Parameter_Channel_PRR2021). Its MATLAB code and license were not copied; the numerical SCDT implementations and final assets are unchanged.
+
+## License
+
+Original software source code and usage/reproduction documentation are licensed under the [MIT License](LICENSE). Research data, model weights, publication figures and Supplementary Material are outside this grant; see [the scope notice](LICENSE_NOTICE.md). Third-party dependencies retain their own licenses.
