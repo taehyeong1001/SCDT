@@ -45,7 +45,7 @@ Fresh GT checks covered one Food condition/member, one Power condition/member, a
 
 ## Runtime
 
-On 10 October 2026, one recorded rate condition per system was timed with all 20 warm-up windows using Python 3.9.6 on macOS/arm64 and the repository's single-thread settings. Each measurement includes interpreter startup and model loading; no GPU was used.
+On 10 October 2026, one recorded rate condition for each of Food/Kuramoto was timed with all 20 warm-up windows using Python 3.9.6 on macOS/arm64 and the repository's single-thread settings. Each measurement includes interpreter startup and model loading; no GPU was used.
 
 | System | Timed condition (zero-based) | Autonomous samples/member | Measured one-condition time | Simple full-sweep projection |
 |---|---|---|---|---|
@@ -54,4 +54,6 @@ On 10 October 2026, one recorded rate condition per system was timed with all 20
 
 These are projections, not full-sweep benchmarks. Multiplying startup/model-loading time for every condition overestimates that overhead, while load, conditioning-dependent behavior and hardware differences can change the runtime. The README rounds these to about 4 and 8 minutes. Measurement records are in `provenance/runtime_notes.json`.
 
-Power's approximately 4.5-minute full-rate runtime (35 conditions x 50 members, 2,000 samples/member) was reported by the user, not independently timed in this update. Training, statistical reconstruction, selected trajectories and GT ODE integration have different workloads and are not covered by these estimates.
+Power's full submitted-model rate sweep was directly timed on the same environment: 35 conditions x 50 members, 2,000 autonomous samples/member took 266.89 seconds (4.45 minutes), including process startup, model loading and output saving. The README rounds this to about 4.5 minutes. This supersedes the earlier user-reported timing; the fresh member outputs were verified against the stored submitted trajectories.
+
+Training, statistical reconstruction, selected trajectories and GT ODE integration have different workloads and are not covered by these timings.

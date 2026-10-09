@@ -33,7 +33,7 @@ These are approximate wall-clock times for the **full rate sweep**, not training
 | System | Rate sweep | Approximate time |
 |---|---|---|
 | Food Chain | 22 conditions x 20 members | About 4 minutes (single-condition projection) |
-| Power System | 35 conditions x 50 members | About 4-5 minutes (user-reported full run) |
+| Power System | 35 conditions x 50 members | About 4.5 minutes (measured full run) |
 | Kuramoto | 18 conditions x 20 members | About 8 minutes (single-condition projection) |
 
 Food/Kuramoto estimates come from one full-member condition on macOS/Apple Silicon, not a timed full sweep. Slower machines may require tens of minutes for Kuramoto. See [the timing scope](docs/VALIDATION.md#runtime). Completed rate conditions are saved incrementally.

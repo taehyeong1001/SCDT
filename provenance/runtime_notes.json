@@ -2,7 +2,7 @@
   "python": "3.9.6",
   "platform": "macOS-27.0-arm64-arm-64bit",
   "processor_architecture": "arm64",
-  "scope": "One condition, full recorded member count; includes process/model loading.",
+  "scope": "Food/Kuramoto: one full-member condition with linear sweep projections; Power: directly timed full sweep. All timings include process/model loading.",
   "measurements": {
     "food": {
       "condition": 10,
@@ -17,6 +17,15 @@
       "full_sweep_conditions": 18,
       "linear_extrapolation_minutes": 7.417594875,
       "full_sweep_measured": false
+    },
+    "power": {
+      "date": "2026-10-10",
+      "elapsed_seconds": 266.893612959,
+      "full_sweep_conditions": 35,
+      "members_per_condition": 50,
+      "autonomous_samples_per_member": 2000,
+      "full_sweep_measured": true,
+      "model_policy": "submitted_model"
     }
   }
 }
