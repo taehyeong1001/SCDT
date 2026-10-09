@@ -1,0 +1,22 @@
+{
+  "python": "3.9.6",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "processor_architecture": "arm64",
+  "scope": "One condition, full recorded member count; includes process/model loading.",
+  "measurements": {
+    "food": {
+      "condition": 10,
+      "elapsed_seconds": 9.719263833000001,
+      "full_sweep_conditions": 22,
+      "linear_extrapolation_minutes": 3.5637300721000003,
+      "full_sweep_measured": false
+    },
+    "kuramoto": {
+      "condition": 7,
+      "elapsed_seconds": 24.72531625,
+      "full_sweep_conditions": 18,
+      "linear_extrapolation_minutes": 7.417594875,
+      "full_sweep_measured": false
+    }
+  }
+}
